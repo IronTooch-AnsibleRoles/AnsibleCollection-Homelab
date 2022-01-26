@@ -1,2 +1,40 @@
 ---
 # tasks file for su-nodejs
+- name: Make Path line to add
+  set_fact:
+    path_env: PATH="$PATH:/opt/nodejs/node-{{ node_version }}-{{ distro }}/bin"
+
+- name: Print path_env
+  ansible.builtin.debug:
+    msg: "{{ path_env }}"
+
+- name: Download NodeJS
+  ansible.builtin.get_url:
+    url: "https://nodejs.org/dist/{{ node_version }}/node-{{ node_version }}-linux-x64.tar.xz"
+    dest: "/tmp/nodejs.tar.xz"
+    force: "yes"
+
+- name: Make /opt/nodejs directory
+  ansible.builtin.file:
+    path: /opt/nodejs
+    state: directory
+    mode: '0755'
+
+
+- name: Unzip NodeJS
+  ansible.builtin.unarchive:
+    src: "/tmp/nodejs.tar.xz"
+    dest: '/opt/nodejs'
+    remote_src: yes
+    #creates: "created_file"
+
+
+    
+
+- name: Add to Path in environment
+  ansible.builtin.lineinfile:
+    path: /etc/profile.d/add_node.sh
+    state: present
+    line: "{{ path_env }}"
+    create: yes
+    
