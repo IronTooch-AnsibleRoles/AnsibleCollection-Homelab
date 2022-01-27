@@ -50,4 +50,4 @@ galaxy_info:
 dependencies: 
   - irontooch.homelabe.su-mongodb
   - irontooch.homelabe.su-nodejs
-  - irontooch.homelabe.su-npm
+
