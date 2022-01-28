@@ -1,0 +1,13 @@
+---
+# tasks file for ci-strider
+
+
+# Install Node.JS
+# Install NPM
+
+
+# Install RushJS
+
+# Install MongoDb
+# Install Git
+# Install node-gyp
