@@ -1,0 +1,11 @@
+---
+# handlers file for fi_jirafeau
+- name: Restart Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+- name: Restart PHPFPM
+  ansible.builtin.service:
+    name: "php{{php_version}}-fpm"
+    state: restarted

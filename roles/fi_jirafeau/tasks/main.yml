@@ -1,0 +1,92 @@
+---
+# tasks file for fi_jirafeau
+- name: Install dependencies for Jirafeau
+  ansible.builtin.apt:
+    name:  
+      - nginx 
+      - php 
+      - php-fpm
+      - git
+    state: present
+    update_cache: yes
+
+- name: Uninstall Apache (which comes with php-fpm)
+  ansible.builtin.apt:
+    name:  
+      - apache2
+    state: absent
+
+- name: Ensure nginx is started
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Ensure php{{php_version}}-fpm is started
+  ansible.builtin.service:
+    name: "php{{php_version}}-fpm"
+    state: started
+    enabled: yes
+
+
+- name: Deploy Nginx HTTP Config File
+  ansible.builtin.template:
+    src: nginx_http.conf.j2
+    dest: /etc/nginx/sites-enabled/default
+    force: yes
+  when: ssl_cert_location is not defined
+  notify: Restart Nginx
+
+- name: Set protocol to HTTP
+  ansible.builtin.set_fact:
+    protocol:  "http"
+  when: ssl_cert_location is not defined
+
+- name: Deploy Nginx HTTPS Config File
+  ansible.builtin.template:
+    src: nginx_https.conf.j2
+    dest: /etc/nginx/sites-enabled/default
+    force: yes
+  when: ssl_cert_location is defined
+  notify: Restart Nginx
+
+- name: Set protocol to HTTPS
+  ansible.builtin.set_fact:
+    protocol:  "https"
+  when: ssl_cert_location is defined
+
+- name: Make directory for landing of files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0700'
+    owner: www-data
+    group: www-data
+  loop:
+    - "/var/data/jirafeau"
+    - "/var/data/jirafeau/files/"
+    - "/var/data/jirafeau/links/"
+    - "/var/data/jirafeau/async/"
+
+- name: Clone Jirafeau repo
+  ansible.builtin.git:
+    repo: "{{ jirafeau_repo }}"
+    dest: "/var/www/jirafeau"
+    force: "yes"
+
+- name: Chown Jirafeua web directory
+  ansible.builtin.file:
+    path: /var/www/jirafeau
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+
+- name: Deploy Jirafeau Config File
+  ansible.builtin.template:
+    src: config.local.php.j2
+    dest: /var/www/jirafeau/lib/config.local.php
+    force: yes
+  notify:
+    - Restart Nginx
+    - Restart PHPFPM

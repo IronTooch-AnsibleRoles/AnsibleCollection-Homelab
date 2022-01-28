@@ -1,0 +1,7 @@
+---
+# defaults file for fi_jirafeau
+php_version: 7.4
+jirafeau_repo: "https://gitlab.com/mojo42/Jirafeau.git"
+jirafeau_admin_pass: "abcd1234"
+server_name: 10.1.45.201
+max_upload_size_mb: 0
