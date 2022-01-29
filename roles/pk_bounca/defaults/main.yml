@@ -1,2 +1,5 @@
 ---
 # defaults file for pk_bounca
+bounca_dbuser: bounca
+bounca_db: bounca
+bounca_release: "https://gitlab.com/bounca/bounca/-/package_files/25555594/download"
