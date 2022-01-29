@@ -3,3 +3,4 @@
 bounca_dbuser: bounca
 bounca_db: bounca
 bounca_release: "https://gitlab.com/bounca/bounca/-/package_files/25555594/download"
+server_fq_hostname: "test-server.example.com"

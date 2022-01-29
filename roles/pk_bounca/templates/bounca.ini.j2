@@ -9,8 +9,8 @@ chmod-socket = 700
 chown-socket = www-data
 socket = /run/uwsgi/app/bounca/socket
 logto = /var/log/uwsgi/bounca.log
-chdir = /srv/www/bounca
-home  = /srv/www/bounca/env
+chdir = /var/www/bounca
+home  = /var/www/bounca/env
 module = bounca.wsgi:application
 plugins = python3
 

@@ -23,10 +23,8 @@ server {
   # ssl_certificate /etc/nginx/ssl/fullchain.pem;
   # ssl_certificate_key /etc/nginx/ssl/privkey.pem;
 
-  server_name bounca; # Replace with your domain
-
   location /static {
-      root /srv/www/bounca/media;
+      root /var/www/bounca/media;
       include mime.types;
   }
   location /api {
@@ -42,7 +40,7 @@ server {
       uwsgi_pass unix://run/uwsgi/app/bounca/socket;
   }
   location / {
-      root /srv/www/bounca/front/dist;
+      root /var/www/bounca/front/dist;
       include mime.types;
       try_files $uri $uri/ /index.html;
   }

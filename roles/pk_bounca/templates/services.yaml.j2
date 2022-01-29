@@ -1,15 +1,16 @@
 psql:
-  dbname: bounca
-  username: bounca
-  password: changeit
-  host: postgres
+  dbname: {{ bounca_db }}
+  username: {{ bounca_dbuser }}
+  password: {{ bounca_dbpassword }}
+  host: localhost
   port: 5432
 
 django:
   debug: False
-  secret_key: '<value-django-secret-just-a-random-salt-string>'
+  secret_key: {% raw %}'{% endraw %}{{ django_key }}{% raw %}'{% endraw %}
+
   hosts:
-    # add your hosts here
+    - {{ server_fq_hostname }}
     - localhost
     - 127.0.0.1
 

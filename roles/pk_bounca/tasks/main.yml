@@ -21,11 +21,15 @@
     state: present
     update_cache: yes
 
+- name: Make random database password and MD5 it
+  set_fact: 
+    bounca_dbpassword: "{{ lookup('community.general.random_string', length=24, special=false) | hash('md5')  }}"
 
 - name: Create Postgres user
   become_user: postgres
   community.postgresql.postgresql_user:
     name: "{{ bounca_dbuser }}"
+    password: "{{ bounca_dbpassword }}"
     role_attr_flags: CREATEDB
   
 - name: Create Postgres DB and grant to user
@@ -44,22 +48,13 @@
     owner: www-data
     group: www-data
 
-- name: Create Logging Directory for BounCA
+- name: Create Settings Directory for BounCA
   ansible.builtin.file:
     path: /etc/bounca
     state: directory
     mode: '0755'
-    owner: www-data
-    group: www-data
-
-- name: Create Service Directory
-  ansible.builtin.file:
-    path: /var/www
-    state: directory
-    mode: '0755'
-    owner: root
-    group: root
-  ignore_errors: true     # If directory already exists, nbd
+    # owner: www-data
+    # group: www-data
 
 - name: Get BounCA Release
   ansible.builtin.get_url:
@@ -73,7 +68,6 @@
     dest: '/var/www'
     remote_src: yes
 
-
 - name: Chown /var/www/bounca directory
   ansible.builtin.file:
     path: /var/www/bounca
@@ -81,6 +75,72 @@
     recurse: yes
     owner: 'www-data'
     group: 'www-data'
+
+- name: Template out nginx sites-enabled
+  ansible.builtin.template:
+    src: default.j2
+    dest: /etc/nginx/sites-enabled/default
+    force: yes
+
+- name: Template out uwsgi apps-available
+  ansible.builtin.template:
+    src: bounca.ini.j2
+    dest: /etc/uwsgi/apps-enabled/bounca.ini
+    force: yes
+
+- name: Make random string for Django
+  set_fact: 
+    django_key: "{{ lookup('community.general.random_string', length=24, special=false) }}"
+
+- name: Template out BounCA services file 
+  ansible.builtin.template:
+    src: services.yaml.j2
+    dest: /etc/bounca/services.yaml
+    force: yes
+
+- name: Install Pip Requirements
+  ansible.builtin.pip:
+    requirements: "./requirements.txt"
+    chdir: "/var/www/bounca"
+    virtualenv: "env"
+
+- name: Django Migrate
+  community.general.django_manage:
+    command: "migrate"
+    project_path: "/var/www/bounca"
+    virtualenv: "env"
+
+- name: Chown Bounca Log again (to fix migrate problem)
+  ansible.builtin.file:
+    path: /var/log/bounca/bounca.log
+    owner: 'www-data'
+    group: 'www-data'
+
+
+- name: Django collectstatic
+  community.general.django_manage:
+    command: "collectstatic"
+    project_path: "/var/www/bounca"
+    virtualenv: "env"
+
+- name: Django collectstatic
+  community.general.django_manage:
+    command: "site {{ server_fq_hostname }}"
+    project_path: "/var/www/bounca"
+    virtualenv: "env"
+
+- name: Ensure uwsgi is restarted
+  ansible.builtin.service:
+    name: uwsgi
+    state: restarted
+    enabled: yes
+
+- name: Ensure nginx is restarted
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+    enabled: yes
+
 
 
 
