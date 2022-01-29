@@ -48,6 +48,6 @@ galaxy_info:
     #       Maximum 20 tags per role.
 
 dependencies: 
-  - irontooch.homelabe.su-mongodb
-  - irontooch.homelabe.su-nodejs
+  - irontooch.homelab.su_mongodb
+  - irontooch.homelab.su_nodejs
 
