@@ -17,5 +17,4 @@ Documentation for the collection.
 ![Follow](https://img.shields.io/github/followers/IronTooch.svg?style=social&label=Follow&maxAge=2592000)
 
 
-
 Installing from Github is accomplished via: `ansible-galaxy collection install git+https://github.com/IronTooch/AnsibleCollection-Homelab.git,master`
