@@ -10,7 +10,9 @@ django:
   secret_key: {% raw %}'{% endraw %}{{ django_key }}{% raw %}'{% endraw %}
 
   hosts:
-    - {{ server_fq_hostname }}
+{% for server_hostname in server_names %}
+    - {{ server_hostname }}
+{% endfor %}
     - localhost
     - 127.0.0.1
 
