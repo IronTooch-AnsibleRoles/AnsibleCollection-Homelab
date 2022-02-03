@@ -1,0 +1,27 @@
+Debug = false
+Quiet = false
+URL = "https://file-transfer.tucc.io"
+OneShot = false
+Removable = false
+Stream = false
+Secure = false
+SecureMethod = "openssl"
+Archive = false
+ArchiveMethod = "tar"
+DownloadBinary = "curl"
+Comments = ""
+Yubikey = false
+Password = ""
+TTL = 2592000
+AutoUpdate = true
+Token = ""
+
+[SecureOptions]
+  Cipher = "aes-256-cbc"
+  Openssl = "/usr/bin/openssl"
+  Options = "-md sha256"
+
+[ArchiveOptions]
+  Compress = "gzip"
+  Options = ""
+  Tar = "/bin/tar"
