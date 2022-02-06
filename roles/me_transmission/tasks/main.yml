@@ -1,0 +1,16 @@
+---
+# tasks file for me_transmission
+  - name: Add Dependencies
+    apt_repository:
+      repo:             ppa:transmissionbt/ppa
+      state:            present
+      update_cache:     yes
+  - name:
+    apt:
+      name:
+          - 'transmission-cli'
+          - 'transmission-common'
+          - 'transmission-daemon'
+          - 'nfs-common'
+      state:                      present
+      update_cache:               yes   

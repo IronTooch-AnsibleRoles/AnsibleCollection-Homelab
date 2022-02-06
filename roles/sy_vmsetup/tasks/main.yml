@@ -1,0 +1,44 @@
+---
+# tasks file for sy_vmsetup
+- name: Install base packages
+  ansible.builtin.apt:
+    name:  
+      - mlocate
+      - vim
+      - screen
+      - bat
+      - qemu-guest-agent
+      - net-tools
+      - fd-find
+    state: present
+    update_cache: true
+    force: true
+
+- name: Update /etc/issue
+  ansible.builtin.template:
+    src: issue.j2
+    dest: /etc/issue
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Update user's .bashrc
+  ansible.builtin.template:
+    src: user.bashrc.j2
+    dest: /home/{{ default_user }}/.bashrc
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Update skel's .bashrc
+  ansible.builtin.template:
+    src: user.bashrc.j2
+    dest: /etc/skel/.bashrc
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Add local user to Sudoers
+  copy:
+    content: "{{ default_user }}  ALL=(ALL) NOPASSWD:ALL" 
+    dest: "/etc/sudoers.d/{{ default_user }}"
+
+
+

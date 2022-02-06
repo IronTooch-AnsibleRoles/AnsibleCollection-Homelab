@@ -1,0 +1,3 @@
+---
+# defaults file for pk_stepcli
+smallstep_system_user: smallstep_user

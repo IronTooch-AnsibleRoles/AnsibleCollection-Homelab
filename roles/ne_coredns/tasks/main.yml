@@ -1,0 +1,52 @@
+---
+# tasks file for ne_coredns
+    - name: Set CoreDNS User
+      set_fact:
+        coredns_user: svc_coredns_user
+    - name: Add CoreDNS Services User
+      user: 
+        create_home: no
+        force: yes
+        name: "{{ coredns_user }}"
+        state: present
+        system: yes
+    - name: Download binary
+      ansible.builtin.unarchive:
+        src: "https://github.com/coredns/coredns/releases/download/v1.8.3/coredns_1.8.3_linux_amd64.tgz"
+        dest: /usr/local/bin
+        remote_src: yes
+        owner: "{{ coredns_user }}"
+        group: "{{ coredns_user }}"
+        mode: a+x
+    - name: Create CoreDNS configuration directory
+      file:
+        path: /etc/coredns
+        state: directory
+        owner: "{{ coredns_user }}"
+        group: "{{ coredns_user }}"
+    - name: Make Corefile
+      template:
+        src: Corefile.j2
+        dest: /etc/coredns/Corefile
+    - name: Make Hosts file
+      template:
+        src: home.hosts.j2
+        dest: /etc/coredns/home.hosts
+    - name: Template out SystemD file
+      template:
+        src: CoreDNS.service.j2
+        dest: /etc/systemd/system/CoreDNS.service
+    - name: Disable systemd-resolved
+      service:
+        name: "systemd-resolved"
+        state: stopped
+        enabled: false
+    - name: Mask systemd-resolved
+      shell:
+        cmd: "systemctl mask systemd-resolved"
+    - name: Enable CoreDNS Service
+      service:
+        name: CoreDNS
+        enabled: yes
+    - name: Restart
+      reboot:

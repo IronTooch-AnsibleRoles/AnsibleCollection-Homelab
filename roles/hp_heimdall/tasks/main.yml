@@ -1,0 +1,38 @@
+---
+# tasks file for hp_heimdall
+    - name: Add Dependencies
+      apt:
+        name: "{{ item }}"
+        state:                      present
+        update_cache:               yes                                                                              
+      with_items:
+        - 'php-fpm'
+        - 'php-pdo'
+        - 'php-mbstring'
+        - 'php-tokenizer'
+        - 'php-xml'
+        - 'php-ctype'
+        - 'php-json'
+        - 'php-zip'
+        - 'php-sqlite3'
+        - 'nginx'
+        - 'git'
+    - name: Clone Git Repo REPONAME
+      git:
+        dest: /opt/heimdall
+        repo: https://github.com/linuxserver/Heimdall.git
+    - name: Chown /opt/heimdall
+      file:
+        path: /opt/heimdall
+        owner: www-data
+        group: www-data
+        recurse: yes
+    - name: Deploy Nginx template
+      template:
+        src: Heimdall_nginx.j2
+        dest: /etc/nginx/sites-enabled/default
+    - name: Restart Nginx
+      service:
+        enabled: yes  
+        name:  nginx                    
+        state: restarted

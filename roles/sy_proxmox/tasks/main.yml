@@ -1,0 +1,9 @@
+---
+# tasks file for su_proxmox
+  - name: Install other packages
+    apt:
+      - openvswitch-switch
+      - vim
+  
+  - name: Remove nagware screen
+    shell:

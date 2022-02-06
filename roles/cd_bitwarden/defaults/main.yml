@@ -1,0 +1,4 @@
+---
+# defaults file for cd_bitwarden
+top_level_domain: example.com
+ssl_certificate_path: /etc/ssl/self/{{ top_level_domain }}

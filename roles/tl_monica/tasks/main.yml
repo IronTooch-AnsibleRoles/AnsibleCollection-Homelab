@@ -1,0 +1,63 @@
+---
+# tasks file for ex_monica
+
+    - name:
+      apt:
+        name:
+            - 'git'
+            - 'php-fpm'
+            - 'php-cli'
+            - 'php-json'
+            - 'php-opcache'
+            - 'php-mysql'
+            - 'php-mbstring'
+            - 'php-zip'
+            - 'php-bcmath'
+            - 'php-intl'
+            - 'php-simplexml'
+            - 'php-dom'
+            - 'php-curl'
+            - 'php-gd'
+            - 'composer'
+            - 'mysql-server'
+            - 'python3-pymysql'
+            - 'python-mysqldb'
+            - 'nginx'
+        state:                      present
+        update_cache:               yes     
+    - name: Clone Git Repo Monica
+      git:
+        dest:  /var/www/monica/
+        repo:  https://github.com/monicahq/monica.git
+    - name: Remove all anonymous mysql users
+      mysql_user:
+        name: ''
+        host_all: yes
+        state: absent 
+    - name: Update mysql root password
+      mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+    - name: Drop my.cnf
+      template:
+        src: mysql_my.cnf.j2
+        dest: ~/.my.cnf
+    - name: Create monica DB
+      mysql_db:
+        name: monica_db
+        state: present
+    - name: Create monica user
+      mysql_user:
+        name: monica_dbuser
+        password: "{{ mysql_user_password }}"
+        priv: '*.*:ALL'
+        state: present   
+
+# cp .env.example .env to create your own version of all the environment variables needed for the project to work.
+# Update .env to your specific needs. Don't forget to set DB_USERNAME and DB_PASSWORD with the settings used behind.
+# Run composer install --no-interaction --no-suggest --no-dev to install all packages.
+# Run php artisan key:generate to generate an application key. This will set APP_KEY with the right value automatically.
+# Run php artisan setup:production to run the migrations, seed the database and symlink folders.
+# Optional: run php artisan passport:install to create the access tokens required for the API (Optional)
+
+# Configure Cron job
