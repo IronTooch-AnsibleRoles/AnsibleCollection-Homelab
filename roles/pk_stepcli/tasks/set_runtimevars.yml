@@ -1,0 +1,26 @@
+---
+- name: Set certificate_name
+  ansible.builtin.set_fact:
+    certificate_name: "{{ subject_names[0] }}"
+
+- name: Set certificate_filename
+  ansible.builtin.set_fact:
+    certificate_filename: "{{ certificate_name }}.crt"
+
+- name: Set certificate_full_path
+  ansible.builtin.set_fact:
+    certificate_full_path: "/etc/step-ca/{{ certificate_filename }}"
+
+- name: Set key_filename
+  ansible.builtin.set_fact:
+    key_filename: "{{ certificate_name }}.key"
+
+- name: Set key_full_path
+  ansible.builtin.set_fact:
+    key_full_path: "/etc/step-ca/{{ key_filename }}"
+
+- name: Set step_subject_names
+  ansible.builtin.set_fact:
+    step_subject_names: "--san {{ subject_names | join (\" --san \") }}"
+
+

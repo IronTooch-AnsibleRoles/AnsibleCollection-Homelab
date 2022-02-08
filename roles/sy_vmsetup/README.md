@@ -21,11 +21,19 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+**initiate_vm.yml**
+```
+#!/usr/bin/env ansible-playbook
+---
+- hosts: all
+  become: true
+  tasks: 
+  roles:
+  - role: 'irontooch.homelab.sy_vmsetup'
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Usage: `ansible-playbook initiate_vm.yml -i IP_ADDR --extra-vars '{"system_role":"my_sys_role"}'`
+
 
 License
 -------

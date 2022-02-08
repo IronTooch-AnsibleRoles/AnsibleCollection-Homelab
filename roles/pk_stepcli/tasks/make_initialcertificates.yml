@@ -1,0 +1,48 @@
+---
+
+
+- name: Print certificate Name
+  ansible.builtin.debug:
+    msg: " {{ certificate_name }} "
+    verbosity: 0
+
+- name: Print certificate filename
+  ansible.builtin.debug:
+    msg: " {{ certificate_name }} "
+    verbosity: 0
+
+- name: Print key filename
+  ansible.builtin.debug:
+    msg: " {{ key_filename }} "
+    verbosity: 0
+
+- name: Print subject names
+  ansible.builtin.debug:
+    msg: " {{ step_subject_names }} "
+    verbosity: 0
+
+
+- name: Make full Step Install command
+  set_fact:
+    cert_request_command: >-
+      step ca certificate
+      {{ certificate_name }}
+      {{ certificate_filename }}
+      {{ key_filename }}
+      {{ step_subject_names }}
+
+- name: Print certificate request command
+  ansible.builtin.debug:
+    msg: "Cert Request Commmand: {{ cert_request_command }}"
+    verbosity: 0
+
+- name: Request certificate
+  ansible.builtin.expect:
+    command: "{{ cert_request_command }}"
+    chdir: "/etc/step-ca"
+    creates: "{{ certificate_filename }}"
+    responses:
+      (?i)JWK: "\r"
+      "Please enter the password to decrypt the provisioner key:": "{{ provisioner_password }}"
+  environment:
+    STEPPATH: /etc/step-ca

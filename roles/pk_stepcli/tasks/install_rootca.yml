@@ -1,0 +1,51 @@
+---
+- name: Pull root CA
+  become_user: "{{ system_user }}"
+  ansible.builtin.command:
+    cmd: "step ca bootstrap --ca-url {{ ca_url }} --fingerprint {{ ca_footprint }}"
+    chdir: "/etc/step-ca"
+
+- name: checking if the user step directory exists
+  stat:
+    path: /home/{{ system_user }}/.step/
+  register: user_step_dir_exists
+
+- name: Moving Step Folders
+  copy:
+    src: "/home/{{ system_user }}/.step/"
+    dest: "/etc/step-ca/"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: '0770'
+    remote_src: true
+  when: user_step_dir_exists.stat.exists
+
+- name: Delete content & directory
+  file:
+    path: "/home/{{ system_user }}/.step/"
+    state: absent
+
+- name: Fix step path
+  ansible.builtin.replace:
+    path: "/etc/step-ca/config/defaults.json"
+    regexp: "/home/{{ system_user }}/.step"
+    replace: "/etc/step-ca"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: '0770'
+
+- name: Deploy Provisioner Password
+  ansible.builtin.copy:
+    content: '{{ provisioner_password }}'
+    dest: /etc/step-ca/step_creds.txt
+    force: true
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0700"
+
+- name: Install root CA
+  ansible.builtin.command:
+    cmd: "step certificate install /etc/step-ca/certs/root_ca.crt"
+    chdir: "/etc/step-ca"
+  environment:
+    STEPPATH: /etc/step-ca

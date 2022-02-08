@@ -1,3 +1,18 @@
 ---
 # defaults file for pk_stepcli
-smallstep_system_user: smallstep_user
+system_user: smallstep_user
+ca_url: ca.example.com
+ca_footprint: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+provisioner_password: aaaaaaa
+subject_names:
+  - "{{ ansible_hostname }}.{{ top_level_domain }}"
+  - "{{ ansible_hostname }}.prod.{{ top_level_domain }}"
+  - "{{ ansible_default_ipv4.address }}"
+certificate_name: "{{ subject_names[0] }}"
+certificate_filename: "{{ certificate_name }}.crt"
+certificate_full_path: "/etc/step-ca/{{ certificate_filename }}"
+key_filename: "{{ certificate_name }}.key"
+key_full_path: "/etc/step-ca/{{ key_filename }}"
+installed_version_path: /etc/step-ca/version.txt
+step_subject_names: "--san {{ subject_names | join (\" --san \") }}"
+dependent_service: "nginx"

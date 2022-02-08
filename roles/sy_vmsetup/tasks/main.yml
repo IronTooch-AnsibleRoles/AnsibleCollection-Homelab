@@ -10,6 +10,7 @@
       - qemu-guest-agent
       - net-tools
       - fd-find
+      - chrony
     state: present
     update_cache: true
     force: true
@@ -35,10 +36,14 @@
     force: true
     mode: '0770'  # Ansible-Lint hates when this isn't set
 
+- name: Update root's .bashrc
+  ansible.builtin.template:
+    src: root.bashrc.j2
+    dest: /root/.bashrc
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
 - name: Add local user to Sudoers
   copy:
     content: "{{ default_user }}  ALL=(ALL) NOPASSWD:ALL" 
     dest: "/etc/sudoers.d/{{ default_user }}"
-
-
-

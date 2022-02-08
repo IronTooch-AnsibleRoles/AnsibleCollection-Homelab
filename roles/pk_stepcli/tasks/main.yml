@@ -1,45 +1,79 @@
 ---
 # tasks file for pk_stepcli
-- name: Install Dependency packages
-  package:
-    name:
-      - acl
-    state: present
+- name: Install dependencies
+  ansible.builtin.include_tasks:
+    file: "install_dependencies.yml"
 
-- name: Make group for smallstep_user
-  ansible.builtin.group:
-    name: "{{ smallstep_system_user }}"
-    state: present
-    system: true
-
-- name: Make service user for smallstep_user
-  ansible.builtin.user:
-    name: "{{ smallstep_system_user }}"
-    state: present
-    create_home: true
-    groups: "{{ smallstep_system_user }}"
-    system: true
-    shell: /bin/bash
+- name: Add Service User
+  ansible.builtin.include_tasks:
+    file: "create_serviceuser.yml"
 
 - name: Get the latest tag from Github for Smallstep CA Step utility
   ansible.builtin.uri:
     url: https://api.github.com/repos/smallstep/cli/releases/latest
   register: latest_release
+  tags: install_smallstep
 
-- name: Set variable for latest release tag without 'v'
-  set_fact:
-    latest_release_semver: "{{ latest_release.json.tag_name | replace('v','') }}"
+- name: Get version from file
+  ansible.builtin.shell:
+    cmd: "test -f \"{{ installed_version_path }}\" && cat {{ installed_version_path }}"
+  register: installed_version
+  failed_when: false
+  changed_when: false
+  tags: install_smallstep
 
-- name: Download latest release for Step utility
-  ansible.builtin.get_url:
-    url: "https://github.com/smallstep/cli/releases/download/{{ latest_release.json.tag_name }}/step-cli_{{ latest_release_semver }}_amd64.deb"
-    dest: "/tmp/smallstep_step.deb"
-    force: "yes"
-    owner: "smallstep_user"
-    group: "smallstep_user"
-    mode: "0770"
-    validate_certs: "yes"
+- name: Install Step CLI if needed
+  ansible.builtin.include_tasks:
+    file: "install_stepcli.yml"
+  when: (installed_version.stdout != latest_release.json.tag_name)
+  tags: install_smallstep
 
-- name: Install Step application from debfile
-  ansible.builtin.apt:
-    deb: "/tmp/smallstep_step.deb"
+- name: Check to see if Root CA is installed
+  ansible.builtin.stat:
+    path: "/etc/step-ca/certs/root_ca.crt"
+  register: root_ca_installed
+  tags: install_rootca
+
+- name: Install Root Certificate
+  ansible.builtin.include_tasks:
+    file: "install_rootca.yml"
+  when: not root_ca_installed.stat.exists
+  tags: install_rootca
+
+# step ca certificate svc.example.com svc.crt svc.key
+- name: Check to see if Leaf Cert is created
+  ansible.builtin.stat:
+    path: "/etc/step-ca/certs/{{ certificate_filename }}"
+  register: leaf_cert_exists
+  tags: install_leafcert
+
+- name: Get Leaf Certificate
+  ansible.builtin.include_tasks:
+    file: "make_initialcertificates.yml"
+  when: not leaf_cert_exists.stat.exists
+  tags: install_leafcert
+
+- name: Check to see if Services are Deployed
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/cert-renewer@.timer"
+  register: services_deployed
+  tags: install_services
+
+- name: Get Leaf Certificate
+  ansible.builtin.include_tasks:
+    file: "install_renewalservices.yml"
+  when: not services_deployed.stat.exists
+  tags: install_services
+
+# Switch on Nginx / Tomcat / Apache / Others
+# https://smallstep.com/docs/step-ca/certificate-authority-server-production#automated-renewal
+
+- name: Install certificates into Nginx and start renewal configuration
+  ansible.builtin.include_tasks:
+    file: "nginx_certs.yml"
+  when: dependent_service == "nginx"
+
+- name: Install certificates into Proxmox and start renewal configuration
+  ansible.builtin.include_tasks:
+    file: "proxmox_certs.yml"
+  when: dependent_service == "proxmox"
