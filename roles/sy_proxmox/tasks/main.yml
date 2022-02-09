@@ -4,6 +4,7 @@
     apt:
       - openvswitch-switch
       - vim
+      - net-tools
   
-  - name: Remove nagware screen
-    shell:
+  # - name: Remove nagware screen
+  #   shell:
