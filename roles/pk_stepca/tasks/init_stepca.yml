@@ -1,0 +1,122 @@
+---
+- name: Set DNS names for Step CA
+  set_fact:
+    step_dns_names: "--dns {{ dns_names | join (\" --dns \") }}"
+
+- name: Make full Step Install command
+  set_fact:
+    step_init_cmd: >-
+      step ca init
+      --ssh
+      --deployment-type standalone
+      --name "{{ top_level_domain | capitalize }} CA"
+      {{ step_dns_names }}
+      --address ":443"
+      --provisioner "ca@{{ top_level_domain }}"
+      --password-file {{ credential_path }}
+      --provisioner-password-file {{ credential_path }}
+
+- name: Print step install command
+  ansible.builtin.debug:
+    msg: "Cmd: {{ step_init_cmd }}"
+    verbosity: 0
+
+- name: Set password for Step CA
+  set_fact:
+    step_ca_password: "{{ lookup('password', '/dev/null') }}"
+
+- name: Make password file for Step CA
+  copy:
+    content: "{{ step_ca_password }}"
+    dest: "{{ credential_path }}"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: '0700'
+
+- name: Chown /etc/step-ca directory
+  ansible.builtin.file:
+    path: /etc/step-ca
+    state: directory
+    recurse: true
+    owner: '{{ system_user }}'
+    group: '{{ system_user }}'
+
+- name: Init Step CA
+  become_user: "{{ system_user }}"
+  ansible.builtin.command:
+    cmd: " {{ step_init_cmd }}"
+    chdir: "/etc/step-ca/"
+
+- name: checking if the user step directory exists
+  stat:
+    path: /home/{{ system_user }}/.step/
+  register: user_step_dir_exists
+
+- name: Moving Step Folders
+  copy:
+    src: "/home/{{ system_user }}/.step/"
+    dest: "/etc/step-ca/"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: '0770'
+    remote_src: true
+  when: user_step_dir_exists.stat.exists
+
+- name: Delete content & directory
+  file:
+    path: "/home/{{ system_user }}/.step/"
+    state: absent
+
+- name: Fix step path in default.json
+  ansible.builtin.replace:
+    path: "/etc/step-ca/config/defaults.json"
+    regexp: "/home/{{ system_user }}/.step"
+    replace: "/etc/step-ca"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: '0770'
+
+- name: Fix step path in ca.json
+  ansible.builtin.replace:
+    path: "{{ ca_config_location }}"
+    regexp: "/home/{{ system_user }}/.step"
+    replace: "/etc/step-ca"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: '0770'
+
+- name: Add STEPPATH to /etc/profiles.d
+  ansible.builtin.blockinfile:
+    path: "/etc/profile.d/steppath.sh"
+    create: true
+    state: present
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    block: | 
+      export STEPPATH=/etc/step-ca
+      alias get-fingerprint='step certificate fingerprint /etc/step-ca/certs/root_ca.crt'
+
+- name: Add STEPPATH to /home/{{ system_user }}/.bashrc
+  ansible.builtin.blockinfile:
+    path: "/home/{{ system_user }}/.bashrc"
+    create: true
+    state: present
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0700"
+    block: | 
+      export STEPPATH=/etc/step-ca
+      alias get-fingerprint='step certificate fingerprint /etc/step-ca/certs/root_ca.crt'
+
+- name: Add STEPPATH to /root/.bashrc
+  ansible.builtin.blockinfile:
+    path: "/root/.bashrc"
+    create: true
+    state: present
+    owner: "root"
+    group: "root"
+    mode: "0700"
+    block: | 
+      export STEPPATH=/etc/step-ca
+      alias get-fingerprint='step certificate fingerprint /etc/step-ca/certs/root_ca.crt'

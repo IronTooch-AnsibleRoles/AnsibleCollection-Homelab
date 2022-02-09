@@ -1,0 +1,57 @@
+---
+- name: Package files to pull to control node
+  community.general.archive:
+    dest: "/tmp/certs.zip"
+    force_archive: true
+    format: zip
+    owner: "root"
+    group: "root"
+    mode: "0700"
+    path:
+      - /etc/step-ca
+  tags: pull_package
+
+- community.general.discord:
+    webhook_id: "{{ lookup('env', 'DISCORD_ID') }}"
+    webhook_token: "{{ lookup('env', 'DISCORD_TOKEN') }}"
+    content: "StepCA Certificate Authority: Pulling files to control node... "
+  tags: pull_package
+
+- name: Make file with root footprint
+  become_user: "{{ system_user }}"
+  ansible.builtin.command:
+    cmd: "step certificate fingerprint /etc/step-ca/certs/root_ca.crt"
+    chdir: "/etc/step-ca/"
+  register: step_footprint
+  environment:
+    STEPPATH: /etc/step-ca
+
+- name: Create Root Footprint file
+  ansible.builtin.copy:
+    content: "{{ step_footprint.stdout }}"
+    dest: "{{ footprint_full_path }}"
+    force: true
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0700"
+
+- name: Pull files to control node
+  ansible.builtin.fetch:
+    src: "{{ item }}"
+    dest: "stepCA"
+    fail_on_missing: true
+    flat: true
+  loop: 
+    - "/tmp/certs.zip"
+    - "{{ footprint_full_path }}"
+    - "{{ credential_path }}"
+  tags: pull_package
+
+- name: Delete files from managed node
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop: 
+  - "/tmp/certs.zip"
+  - "{{ footprint_full_path }}"
+  tags: pull_package

@@ -1,0 +1,22 @@
+---
+- name: Template out service file
+  ansible.builtin.template:
+    src: step-ca.service.j2
+    dest: "{{ step_service_location }}"
+    force: true
+    mode: '0644'  # Ansible-Lint hates when this isn't set
+
+- name: Ensure step-ca is started
+  ansible.builtin.service:
+    name: step-ca
+    state: started
+    enabled: true
+
+- name: Init ACME provisioner
+  become_user: "{{ system_user }}"
+  ansible.builtin.command:
+    cmd: "step ca provisioner add acme --type ACME"
+    chdir: "/etc/step-ca/"
+  environment:
+    STEPPATH: /etc/step-ca
+

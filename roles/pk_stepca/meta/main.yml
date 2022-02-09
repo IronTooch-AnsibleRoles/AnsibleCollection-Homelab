@@ -1,0 +1,20 @@
+galaxy_info:
+  role_name: smallstepca
+  namespace: irontooch
+  author: IronTooch
+  license: GPL-3.0-only
+  min_ansible_version: 2.1
+  description: Deploys the Smallstep CA designed by Smallstep (https://smallstep.com/docs/step-ca/getting-started)
+  company: Tooch IO, LLC
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+
+  galaxy_tags:
+    - selfhosted
+    - pki
+    - certificates
+
+dependencies: []

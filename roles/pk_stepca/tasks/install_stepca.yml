@@ -1,0 +1,66 @@
+---
+- name: Set variable for latest release tag without 'v'
+  set_fact:
+    latest_release_semver: "{{ latest_release.json.tag_name | replace('v','') }}"
+
+- name: Download latest release for Step utility
+  ansible.builtin.get_url:
+    url: "https://github.com/smallstep/cli/releases/download/{{ latest_release.json.tag_name }}/step-cli_{{ latest_release_semver }}_amd64.deb"
+    dest: "/tmp/smallstep_step.deb"
+    force: "yes"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0770"
+    validate_certs: "yes"
+
+- name: Get the latest tag from Github for Smallstep CA
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/smallstep/certificates/releases/latest
+  register: latest_release
+
+- name: Set variable for latest release tag without 'v'
+  set_fact:
+    latest_release_semver: "{{ latest_release.json.tag_name | replace('v','') }}"
+
+- name: Download latest release for Smallstep CA
+  ansible.builtin.get_url:
+    url: "https://github.com/smallstep/certificates/releases/download/{{ latest_release.json.tag_name }}/step-ca_{{ latest_release_semver }}_amd64.deb"
+    dest: "/tmp/smallstep_ca.deb"
+    force: "yes"
+    owner: "smallstep_user"
+    group: "smallstep_user"
+    mode: "0770"
+    validate_certs: "yes"
+
+- name: Install Step application from debfile
+  ansible.builtin.apt:
+    deb: "/tmp/smallstep_step.deb"
+
+- name: Install Step application from debfile
+  ansible.builtin.apt:
+    deb: "/tmp/smallstep_ca.deb"
+
+- name: Make Step CA directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0700'
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+  loop:
+    - /etc/step-ca
+    - /etc/step-ca/config
+    - /etc/step-ca/db
+    - /var/step-ca
+
+- name: Give Step CA permission to bind to low ports
+  ansible.builtin.shell:
+    cmd: "setcap CAP_NET_BIND_SERVICE=+eip $(which step-ca)"
+
+- name: Make current version file (to save re-installs / support idempotence)
+  copy:
+    content: "{{ latest_release.json.tag_name }}"
+    dest: "{{ installed_version_path }}"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: '0770'
