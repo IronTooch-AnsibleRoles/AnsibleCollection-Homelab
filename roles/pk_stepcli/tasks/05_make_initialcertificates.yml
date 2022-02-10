@@ -21,7 +21,6 @@
     msg: " {{ step_subject_names }} "
     verbosity: 0
 
-
 - name: Make full Step Install command
   set_fact:
     cert_request_command: >-
@@ -35,6 +34,16 @@
   ansible.builtin.debug:
     msg: "Cert Request Commmand: {{ cert_request_command }}"
     verbosity: 0
+
+- name: Store a copy of the command to request the initial certs
+  ansible.builtin.copy:
+    content: "{{ cert_request_command }}"
+    dest: /etc/step-ca/cert_request.sh
+    force: true
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0700"
+
 
 - name: Request certificate
   ansible.builtin.expect:

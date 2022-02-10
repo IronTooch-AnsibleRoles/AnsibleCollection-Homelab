@@ -15,4 +15,4 @@ key_filename: "{{ certificate_name }}.key"
 key_full_path: "/etc/step-ca/{{ key_filename }}"
 installed_version_path: /etc/step-ca/version.txt
 step_subject_names: "--san {{ subject_names | join (\" --san \") }}"
-dependent_service: "nginx"
+dependent_service: "" #Options nginx/proxmox
