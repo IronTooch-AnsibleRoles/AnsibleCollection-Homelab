@@ -1,4 +1,19 @@
 ---
 # defaults file for cd_bitwarden
-top_level_domain: example.com
-ssl_certificate_path: /etc/ssl/self/{{ top_level_domain }}
+service_user: bitwarden_user
+bitwarden_sh_url: "https://raw.githubusercontent.com/bitwarden/server/master/scripts/bitwarden.sh"
+external_domain: "bitwarden.example.com"
+installation_id: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+installation_key: "aaaaaaaaaaaaaaaaaaaa"
+bitwarden_dir: "/opt/bitwarden"
+smtp_host: "smtp.gmail.com"
+smtp_port: "587"
+smtp_ssl: "true"
+smtp_username: "my_user@gmail.com"
+smtp_password: "my_password"
+admin_user_email: "bitwarden_admin@example.com"
+cert_renewer_path: "/etc/systemd/system/cert-renewer@bitwarden.service.d"
+environment_file: "{{ bitwarden_dir }}/bwdata/env/global.override.env"
+reverse_proxy_servers:
+  - 11.22.33.44
+  - 55.66.77.88

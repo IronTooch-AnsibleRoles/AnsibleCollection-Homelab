@@ -1,0 +1,33 @@
+---
+- name: Create bitwarden directory
+  ansible.builtin.file:
+    path: "{{ bitwarden_dir }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_user }}"
+    mode: '700'
+
+- name: Pull Bitwarden Installer
+  ansible.builtin.get_url:
+    url: "{{ bitwarden_sh_url }}"
+    dest: "{{ bitwarden_dir }}/bitwarden.sh"
+    force: true
+    owner: "{{ service_user }}"
+    group: "{{ service_user }}"
+    mode: "0700"
+    validate_certs: "true"
+
+- name: Install bitwarden
+  become_user: "{{ service_user }}"
+  ansible.builtin.expect:
+    command: "./bitwarden.sh install"
+    chdir: "{{ bitwarden_dir }}"
+    creates: "./bwdata/env/global.override.env"
+    responses:
+      ex. bitwarden.example.com: "{{ external_domain }}"
+      free SSL certificate: "n"
+      Enter the database name for your Bitwarden instance: "vault"
+      Enter your installation id: "{{ installation_id }}"
+      Enter your installation key: "{{ installation_key }}"
+      Do you have a SSL certificate to use: "y"
+      Is this a trusted SSL certificate: "n"
