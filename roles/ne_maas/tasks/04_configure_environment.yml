@@ -1,0 +1,70 @@
+---
+- name: Replace SMTP host
+  ansible.builtin.replace:
+    path: "{{ environment_file }}"
+    regexp: "globalSettings__mail__smtp__host=REPLACE"
+    replace: "globalSettings__mail__smtp__host={{ smtp_host }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_user }}"
+    mode: '0700'
+
+- name: Replace SMTP port
+  ansible.builtin.replace:
+    path: "{{ environment_file }}"
+    regexp: "globalSettings__mail__smtp__port=REPLACE"
+    replace: "globalSettings__mail__smtp__port={{ smtp_port }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_user }}"
+    mode: '0700'
+
+- name: Replace SMTP ssl
+  ansible.builtin.replace:
+    path: "{{ environment_file }}"
+    regexp: "globalSettings__mail__smtp__ssl=REPLACE"
+    replace: "globalSettings__mail__smtp__ssl={{ smtp_ssl }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_user }}"
+    mode: '0700'
+
+- name: Replace SMTP username
+  ansible.builtin.replace:
+    path: "{{ environment_file }}"
+    regexp: "globalSettings__mail__smtp__username=REPLACE"
+    replace: "globalSettings__mail__smtp__username={{ smtp_username }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_user }}"
+    mode: '0700'
+
+- name: Replace SMTP password
+  ansible.builtin.replace:
+    path: "{{ environment_file }}"
+    regexp: "globalSettings__mail__smtp__password=REPLACE"
+    replace: "globalSettings__mail__smtp__password={{ smtp_password }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_user }}"
+    mode: '0700'
+
+- name: Add Admin User
+  ansible.builtin.replace:
+    path: "{{ environment_file }}"
+    regexp: "adminSettings__admins="
+    replace: "adminSettings__admins={{ admin_user_email }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_user }}"
+    mode: '0700'
+
+- name: Deploy config.yml
+  ansible.builtin.template:
+    src: config.yml.j2
+    dest: "{{ bitwarden_dir }}/bwdata/config.yml"
+    force: true
+    mode: '0700'  # Ansible-Lint hates when this isn't set
+
+- name: Own all of the bitwarden folder
+  ansible.builtin.file:
+    path: "{{ bitwarden_dir }}"
+    state: directory
+    recurse: true
+    owner: '{{ service_user }}'
+    group: '{{ service_user }}'
+
