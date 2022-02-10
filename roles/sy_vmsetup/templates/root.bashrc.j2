@@ -97,10 +97,11 @@ fi
 #if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 #    . /etc/bash_completion
 #fi
-IPADDR=$(ip addr | sed '7,9!d' |  grep "inet " | awk '{print $2}' | sed 's|\(.*\)/.*|\1|')
+IPADDR=$(hostname -I | awk '{$1=$1};1')
 
 PS1="\[\033[1m\]\[\033[33m\][\[\033[31m\]\u\[\033[34m\]@\[\033[32m\]\h\[\033[34m\]($IPADDR)\[\033[33m\]: \[\033[36m\]\w\[\033[33m\]]\\$ \[\033[0m\]"
 
 CDPATH=.:/etc:/var/log:/var:/opt:/
 
 alias wipe-syslog='truncate -s 0 /var/log/syslog'
+alias mkdir='mkdir -pv'
