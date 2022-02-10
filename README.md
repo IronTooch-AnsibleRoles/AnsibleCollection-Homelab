@@ -28,6 +28,7 @@ au_n8m *(In Progress)*
 
 ## Credentials
 
+cd_authentik *(In Progress)*
 cd_bitwarden *(In Progress)*
 cd_openldap *(In Progress)*
 cd_samba *(In Progress)*
@@ -40,13 +41,14 @@ cm_matrixsynapse *(In Progress)*
 ## Database
 
 db_mongodb
+db_postgres *(In Progress)*
 db_mysql *(In Progress)*
 db_missionkontrol  *(Cleanup needed)*
 
 ## File Management
 
 fi_chibisafe *(In Progress)*
-fi_jirafeau
+fi_jirafeau *(In Progress)*
 fi_plik *(In Progress)*
 
 ## Homepages
@@ -81,22 +83,22 @@ pk_ejbca  *(Cleanup needed)*
 
 ## Support (Used for dependency mapping)
 
-su_nodejs
-su_rushjs
+su_nodejs *(In Progress)*
+su_rushjs *(In Progress)*
 su_docker *(Cleanup needed)*
 
 ## System Roles
 
-sy_autoupgrade
-sy_certbot
+sy_autoupgrade *(In Progress)*
+sy_ajenti *(In Progress)*
 sy_proxmox *(In Progress)*
 sy_vmsetup
-sy_olivetin
+sy_olivetin *(In Progress)*
 
 ## Other Tools
 
-tl_cyberchef
-tl_firefly3
-tl_monica
-tl_polr
-tl_privatebin
+tl_cyberchef *(In Progress)*
+tl_firefly3 *(In Progress)*
+tl_monica *(In Progress)*
+tl_polr *(In Progress)*
+tl_privatebin *(In Progress)*
