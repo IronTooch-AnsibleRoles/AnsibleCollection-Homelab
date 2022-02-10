@@ -1,10 +1,52 @@
 ---
 # tasks file for su_proxmox
-  - name: Install other packages
-    apt:
+- name: Install other packages
+  apt:
+    name:
       - openvswitch-switch
       - vim
       - net-tools
   
   # - name: Remove nagware screen
-  #   shell:
+
+- name: Run pveversion to get the Version of Proxmox installed
+  command:
+    cmd: "pveversion"
+  register: proxmox_shell
+
+- name: Print Proxmox Version
+  ansible.builtin.debug:
+    msg: "{{ proxmox_shell }}"
+    verbosity: 0
+
+
+# pve-manager/7.1-10/6ddebafe (running kernel: 5.13.19-4-pve)
+- name: Set Proxmox Version from Facts
+  set_fact: 
+    proxmox_ver: "{{ (proxmox_shell.stdout | split('/'))[1] }}"
+
+- name: Print Proxmox Version
+  ansible.builtin.debug:
+    msg: "{{ proxmox_ver }}"
+    verbosity: 0
+
+- name: Update /etc/issue
+  ansible.builtin.template:
+    src: issue.j2
+    dest: /etc/issue
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Update skel's .bashrc
+  ansible.builtin.template:
+    src: user.bashrc.j2
+    dest: /etc/skel/.bashrc
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Update root's .bashrc
+  ansible.builtin.template:
+    src: root.bashrc.j2
+    dest: /root/.bashrc
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
