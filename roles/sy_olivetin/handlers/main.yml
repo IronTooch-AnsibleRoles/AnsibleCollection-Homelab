@@ -1,2 +1,5 @@
 ---
-# handlers file for sy_olivetin
+- name: Restart {{ olivetin_name }}
+  service:
+    name: "{{ olivetin_name }}"
+    state: restarted

@@ -1,0 +1,22 @@
+---
+- name: Ensure OliveTin is started
+  ansible.builtin.service:
+    name: OliveTin
+    state: started
+    enabled: true
+
+- name: Get host IP address
+  set_fact:
+    olivetin_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+- name: Print results
+  ansible.builtin.debug:
+    msg:
+      - "Congratulations! Your default OliveTin installation should be available at http://{{ olivetin_host_ip }}:{{ olivetin_default_port }}"
+      - 'If icons do not appear, please ensure you have a font installed on your web browser that supports the following Unicode characters:'
+      - ' 1F600 - Grinning Face'
+      - ' 1f4e1 - Satellite Antenna'
+      - ' 1f4be - Floppy disk'
+      - '  23fb - Power Symbol'
+      - ''
+      - 'The configuration file for OliveTin can be further modified by changing the file at /etc/OliveTin/config.yaml'

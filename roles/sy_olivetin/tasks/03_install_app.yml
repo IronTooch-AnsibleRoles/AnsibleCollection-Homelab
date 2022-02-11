@@ -1,0 +1,26 @@
+---
+- name: Create olivetin directory
+  ansible.builtin.file:
+    path: "{{ olivetin_dir }}"
+    state: directory
+    mode: '700'
+
+- name: Ask Github for the latest version of OliveTin
+  uri:
+    url: "https://api.github.com/repos/OliveTin/Olivetin/releases/latest"
+    method: GET
+  register: release_results
+
+- name: Set OliveTin release name
+  set_fact:
+    olivetin_ver: "{{ (release_results.json).tag_name }}"
+
+- name: Download OliveTin
+  ansible.builtin.get_url:
+    url: "https://github.com/OliveTin/OliveTin/releases/download/{{ olivetin_ver }}/OliveTin_{{ olivetin_ver }}_linux_amd64.deb"
+    dest: "/tmp/olivetin.deb"
+    force: "yes"
+
+- name: Install from olivetin.deb
+  ansible.builtin.apt:
+    deb: "/tmp/olivetin.deb"

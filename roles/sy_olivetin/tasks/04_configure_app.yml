@@ -1,0 +1,21 @@
+---
+- name: Deploy OliveTin custom config file
+  ansible.builtin.copy:
+    content: "{{ olivetin_custom_config_data }}"
+    dest: "{{ olivetin_config_file }}"
+    force: true
+    mode: '0700'
+  notify:
+    - Restart OliveTin
+  when: olivetin_custom_config_data is defined
+
+
+- name: Deploy OliveTin default config file
+  ansible.builtin.template:
+    src: olivetin.config.yaml.j2
+    dest: "{{ olivetin_config_file }}"
+    force: true
+    mode: '0700'  # Ansible-Lint hates when this isn't set
+  notify:
+    - Restart OliveTin
+  when: olivetin_custom_config_data is undefined

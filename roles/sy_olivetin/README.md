@@ -1,31 +1,75 @@
-Role Name
+OliveTin Ansible Role
 =========
 
-A brief description of the role goes here.
+Installs the OliveTin Web Interface tool for system management. OliveTin's main repository is https://github.com/OliveTin/OliveTin . This has only been tested on Ubuntu 20 server, but should work fine on other Debian-based systems.
+
+![Ansible Role](https://img.shields.io/ansible/role/57702)
+![Galaxy Downloads](https://img.shields.io/badge/dynamic/json?color=blueviolet&label=Galaxy%20Downloads&query=%24.download_count&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F57702%2F%3Fformat%3Djson) 
+![GitHub all releases](https://img.shields.io/github/downloads-pre/irontooch/AnsibleRole-OliveTin/total)
+![GitHub repo size](https://img.shields.io/github/repo-size/IronTooch/AnsibleRole-OliveTin)
+![GitHub issues](https://img.shields.io/github/issues-raw/Irontooch/AnsibleRole-OliveTin)
+![GitHub Open PRs](https://badgen.net/github/open-prs/Irontooch/AnsibleRole-OliveTin)
+![GitHub last commit](https://img.shields.io/github/last-commit/IronTooch/AnsibleRole-OliveTin)
+![GitHub Maintained](https://img.shields.io/maintenance/yes/2022)
+![GitHub](https://img.shields.io/github/license/IronTooch/AnsibleRole-OliveTin)
+![Forks](https://img.shields.io/github/forks/Irontooch/AnsibleRole-OliveTin.svg)
+![Stars](https://img.shields.io/github/stars/Irontooch/AnsibleRole-OliveTin.svg)
+![Watchers](https://img.shields.io/github/watchers/Irontooch/AnsibleRole-OliveTin.svg)
+![Follow](https://img.shields.io/github/followers/IronTooch.svg?style=social&label=Follow&maxAge=2592000)
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Jinja2 is required to execute the template module on the control node. No other requirements at this time. 
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+default_port: The port OliveTin will listen on. Defaults to 1337
+
+log_level: The log level for OliveTin. Defaults to INFO
+
+config_data: An override of the default configuration file.
+
+Future Work
+-----------
+Make the override of the default configuration file a bit more effective. Maybe a Block in File, so it doesn't override the log and default port variables.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Depends on the tag name and the URL to pull the deb file being the same. So if the tag to download structure changes, it will break grabbing the .deb
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Basic installation with default configuration file on default port (1337)
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```ansible
+  - hosts: servers
+    roles:
+      - role: irontooch.olivetin
+```
+
+Basic installation with default configuration file and different listening port
+
+```ansible
+  - hosts: servers
+    roles:
+      - role: irontooch.olivetin
+        vars:
+          default_port: 1344
+```
+
+Installation with new configuration file
+
+```ansible
+  - hosts: servers
+    roles:
+      - role: irontooch.olivetin
+        vars:
+          config_data: "{{ lookup('file', 'MY_NEW_CONFIG_FILE.txt')}}"
+```
 
 License
 -------
@@ -35,4 +79,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Author is IronTooch.
