@@ -1,102 +1,21 @@
 ---
-# tasks file for ex_polr
-    - name: Install packages
-      apt:
-        name:
-            - 'git'
-            - 'php-fpm'
-            - 'php-cli'
-            - 'php-json'
-            - 'php-opcache'
-            - 'php-mysql'
-            - 'php-mbstring'
-            - 'php-zip'
-            - 'php-bcmath'
-            - 'php-intl'
-            - 'php-simplexml'
-            - 'php-dom'
-            - 'php-curl'
-            - 'php-gd'
-            - 'php-pdo'
-            - 'php-tokenizer'
-            - 'composer'
-            - 'mysql-server'
-            - 'python3-pymysql'
-            - 'python-mysqldb'
-            - 'nginx'
-            - 'unzip'
-        state: present
-        update_cache: yes
+# tasks file for zz_app
+- name: Install dependencies
+  ansible.builtin.include_tasks:
+    file: "01_install_dependencies.yml"
 
-    - name: Pull Polr release and unpack to Nginx
-      git:
-        dest:  /opt/polr/
-        repo:  https://github.com/cydrobolt/polr.git
+- name: Add Service User
+  ansible.builtin.include_tasks:
+    file: "02_create_serviceuser.yml"
 
-    - name: Change Polr ownership to www-data user
-      file:
-        path: /opt/polr/
-        owner: www-data
-        group: www-data
+- name: Download and Install my_app
+  ansible.builtin.include_tasks:
+    file: "03_install_app.yml"
 
-    - name: Remove all anonymous mysql users
-      mysql_user:
-        name: ''
-        host_all: yes
-        state: absent
+- name: Configure Environment
+  ansible.builtin.include_tasks:
+    file: "04_configure_app.yml"
 
-    - name: Update mysql root password
-      mysql_user:
-        name: root
-        password: "{{ mysql_root_password }}"
-
-    - name: Drop my.cnf
-      template:
-        src: mysql_my.cnf.j2
-        dest: ~/.my.cnf
-
-      # Requires mysql_root_password variable to be set
-    - name: Create polr DB
-      mysql_db:
-        name: polr_db
-        state: present
-
-    - name: Create Polr Db user
-      mysql_user:
-        name: polr_dbuser
-        password: "{{ mysql_user_password }}"
-        priv: '*.*:ALL'
-        state: present
-
-    - name: Install Composer
-      shell: "curl -sS https://getcomposer.org/installer | php"
-      args:
-        chdir: /opt/polr/
-
-    - name: Install Dependencies with Composer
-      shell: php composer.phar install --no-dev -o
-      args:
-        chdir: /opt/polr/
-
-    - name: Copy .env file
-      template:
-        src: polr_env.j2
-        dest: /opt/polr/.env
-
-    - name: Change Polr ownership to www-data user
-      file:
-        path: /opt/polr/
-        owner: www-data
-        group: www-data
-        state: directory
-        recurse: true
-
-    - name: Copy Nginx Conf
-      template: 
-        src: polr_nginx.j2
-        dest: /etc/nginx/sites-enabled/default
-
-    - name: Restart service nginx
-      service:
-        name: httpd
-        state: restarted
+- name: Deploy Services and Handle SSL
+  ansible.builtin.include_tasks:
+    file: "05_deploy_services.yml"

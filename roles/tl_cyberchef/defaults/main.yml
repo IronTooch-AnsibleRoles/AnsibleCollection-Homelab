@@ -1,2 +1,30 @@
 ---
-# defaults file for tl_cyberchef
+# Items for Default Installation
+my_app_name: "my_app"
+my_app_version: "3.1"
+my_app_repo: "ppa:maas/{{ maas_version }}"
+my_app_url: ""
+my_app_service_user: bitwarden_user
+my_app_dir: "/opt/bitwarden"
+my_app_install_program: "./install.sh"
+my_app_install_command: "./{{ my_app_install_program }} my_option"
+my_app_install_artifact: "my_post_install_artifact"
+my_app_installed_config_file: "my_app_config_file"
+my_app_deployed_config_file: "my_app_config_file"
+my_app_post_config_command: "./rebuild.sh"
+my_app_start_command: "{{ my_app_dir }}/my_app.sh start"
+my_app_stop_command: "{{ my_app_dir }}/my_app.sh start"
+
+# Items for provisioning the Service
+my_app_inital_cert_location: "/etc/step-ca"
+my_app_dependent_service: "nginx"
+my_app_external_domain: "my_app.example.com"
+my_app_certificate_path: "/etc/my_app/certificate.crt"
+my_app_key_path: "/etc/my_app/certificate.key"
+my_app_cert_renewer_path: "/etc/systemd/system/cert-renewer@{{ my_app_dependent_service }}.service.d"
+my_app_cert_timer: cert-renewer@{{ my_app_dependent_service }}.timer""
+
+# Other App Settings
+my_app_list_data:
+  - 11.22.33.44
+  - 55.66.77.88

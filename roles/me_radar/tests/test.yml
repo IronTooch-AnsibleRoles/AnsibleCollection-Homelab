@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - me_radar
+    - zz_rolemodel

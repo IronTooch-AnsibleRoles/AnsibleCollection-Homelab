@@ -1,33 +1,21 @@
 ---
-# tasks file for ex_privatebin
-    - name: Install base packages
-      package:
-        name: 
-          - 'git'
-          - 'php-fpm'
-          - 'php-cli'
-          - 'php-mbstring'
-          - 'php-zip'
-          - 'php-curl'
-          - 'php-gd'
-          - 'libsodium-dev'
-          - 'nginx'
-        state: present
-        update_cache: yes
-    - name: Pull PrivateBin release and unpack to Nginx
-      git:
-        dest:  /opt/privatebin/
-        repo:  https://github.com/PrivateBin/PrivateBin.git
-    - name: Set Nginx root to PrivateBin
-      template:
-        src: privatebin_nginx.j2
-        dest: /etc/nginx/sites-enabled/default
-    - name: Change PrivateBin ownership to www-data user
-      file:
-        path: /opt/privatebin/
-        owner: www-data
-        group: www-data
-    - name: Template out conf file
-      template:
-        src: privatebin_conf.j2
-        dest: /opt/privatebin/cfg/conf.php
+# tasks file for zz_app
+- name: Install dependencies
+  ansible.builtin.include_tasks:
+    file: "01_install_dependencies.yml"
+
+- name: Add Service User
+  ansible.builtin.include_tasks:
+    file: "02_create_serviceuser.yml"
+
+- name: Download and Install my_app
+  ansible.builtin.include_tasks:
+    file: "03_install_app.yml"
+
+- name: Configure Environment
+  ansible.builtin.include_tasks:
+    file: "04_configure_app.yml"
+
+- name: Deploy Services and Handle SSL
+  ansible.builtin.include_tasks:
+    file: "05_deploy_services.yml"
