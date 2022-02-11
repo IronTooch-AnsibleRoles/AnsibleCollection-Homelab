@@ -24,7 +24,7 @@ Installing from Github is accomplished via: `ansible-galaxy collection install g
 ## Automation
 
 au_awx *(In Progress)*
-au_n8m *(In Progress)*
+au_n8n *(In Progress)*
 
 ## Credentials
 
@@ -71,6 +71,7 @@ me_transmission *(In Progress)*
 
 ne_coredns *(In Progress)*
 ne_ddclient *(In Progress)*
+ne_maas *(In Progress)*
 ne_nginx *(In Progress)*
 ne_nginxproxymanager *(In Progress)*
 
