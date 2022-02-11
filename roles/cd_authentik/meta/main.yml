@@ -1,5 +1,5 @@
 galaxy_info:
-  role_name: olivetin
+  role_name: cd_authentik
   namespace: irontooch
   author: IronTooch
   description: App_Description
@@ -13,4 +13,5 @@ galaxy_info:
 
   galaxy_tags: []
 
-dependencies: []
+dependencies: 
+  - '/mnt/c/Users/steve/Nextcloud/Development/Git/AnsibleCollections/irontooch/homelab/roles/su_docker'
