@@ -2,8 +2,7 @@
 # Items for Default Installation
 olivetin_name: "OliveTin"
 olivetin_dir: "/etc/OliveTin"
-olivetin_install_artifact: "my_post_install_artifact"
 olivetin_config_file: "/etc/OliveTin/config.yaml"
-
+# olivetin_custom_config_data
 olivetin_default_port: 1337
 olivetin_log_level: "INFO"  # Options are INFO, WARN, DEBUG
