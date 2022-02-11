@@ -2,7 +2,12 @@
 # defaults file for ne_maas
 maas_version: "3.1"
 maas_repo: "ppa:maas/{{ maas_version }}"
-service_user: bitwarden_user
+maas_admin_user: "maas_admin"
+maas_admin_email: "maas_admin@maas.example.com"
+#maas_github_id: "gh:IronTooch"
+maas_admin_password: "abcd1234"
+
+# service_user: bitwarden_user
 # bitwarden_sh_url: "https://raw.githubusercontent.com/bitwarden/server/master/scripts/bitwarden.sh"
 # external_domain: "bitwarden.example.com"
 # installation_id: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"

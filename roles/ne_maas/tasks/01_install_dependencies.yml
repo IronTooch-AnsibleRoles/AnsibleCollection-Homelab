@@ -1,5 +1,4 @@
 ---
-
 - name: Add MaaS repository
   ansible.builtin.apt_repository:
     repo: "{{ maas_repo }}"
@@ -13,4 +12,7 @@
       - acl
       - sudo
       - python3-pexpect
+      - maas
+      - maas-cli
     state: present
+

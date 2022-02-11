@@ -1,23 +1,25 @@
 ---
 # tasks file for ne_maas
----
-# tasks file for cd_bitwarden
 - name: Install dependencies
   ansible.builtin.include_tasks:
     file: "01_install_dependencies.yml"
 
-- name: Add Service User
-  ansible.builtin.include_tasks:
-    file: "02_create_serviceuser.yml"
+# - name: Add Service User
+#   ansible.builtin.include_tasks:
+#     file: "02_create_serviceuser.yml"
 
 # - name: Download Bitwarden
 #   ansible.builtin.include_tasks:
 #     file: "03_install_bitwarden.yml"
 
-# - name: Configure Environment
-#   ansible.builtin.include_tasks:
-#     file: "04_configure_environment.yml"
+- name: Configure Environment
+  ansible.builtin.include_tasks:
+    file: "04_configure_environment.yml"
 
 # - name: Deploy Services and Handle SSL
 #   ansible.builtin.include_tasks:
 #     file: "05_deploy_services.yml"
+
+- name: Print the url for MaaS
+  ansible.builtin.debug:
+    msg: "http://{{ ansible_default_ipv4.address }}:5240/MAAS"
