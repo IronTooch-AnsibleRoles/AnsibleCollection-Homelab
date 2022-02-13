@@ -23,3 +23,8 @@
 - name: Print the url for MaaS
   ansible.builtin.debug:
     msg: "http://{{ ansible_default_ipv4.address }}:5240/MAAS"
+
+# Configure Region
+# Configure DNS Forwarders
+# Add Fabric
+# Assign Interface to Fabric
