@@ -16,90 +16,89 @@ Documentation for the collection.
 ![Watchers](https://img.shields.io/github/watchers/Irontooch/AnsibleCollection-Homelab.svg)
 ![Follow](https://img.shields.io/github/followers/IronTooch.svg?style=social&label=Follow&maxAge=2592000)
 
-
 Installing from Github is accomplished via: `ansible-galaxy collection install git+https://github.com/IronTooch/AnsibleCollection-Homelab.git,master`
 
-# Roles included
+## Roles included
 
-## Automation
+### Automation
 
-au_awx *(In Progress)*
-au_n8n *(In Progress)*
+- au_awx *(In Progress)*
+- au_n8n *(In Progress)*
 
-## Credentials
+### Credentials
 
-cd_authentik *(In Progress)*
-cd_bitwarden *(In Progress)*
-cd_openldap *(In Progress)*
-cd_samba *(In Progress)*
-cd_vault *(In Progress)*
+- cd_authentik *(In Progress)*
+- cd_bitwarden *(In Progress)*
+- cd_openldap *(In Progress)*
+- cd_samba *(In Progress)*
+- cd_vault *(In Progress)*
 
-## Communications
+### Communications
 
-cm_matrixsynapse *(In Progress)*
+- cm_matrixsynapse *(In Progress)*
 
-## Database
+### Database
 
-db_mongodb
-db_postgres *(In Progress)*
-db_mysql *(In Progress)*
-db_missionkontrol  *(Cleanup needed)*
+- db_mongodb *(Cleanup needed)*
+- db_postgres *(In Progress)*
+- db_mysql *(In Progress)*
+- db_missionkontrol  *(Cleanup needed)*
 
-## File Management
+### File Management
 
-fi_chibisafe *(In Progress)*
-fi_jirafeau *(In Progress)*
-fi_plik *(In Progress)*
+- fi_chibisafe *(In Progress)*
+- fi_jirafeau *(In Progress)*
+- fi_plik *(In Progress)*
 
-## Homepages
+### Homepages
 
-hp_dashmachine *(In Progress)*
-hp_heimdall *(In Progress)*
-hp_homer *(In Progress)*
+- hp_dashmachine *(In Progress)*
+- hp_heimdall *(In Progress)*
+- hp_homer *(In Progress)*
 
-## Media and Media Management
+### Media and Media Management
 
-me_lidar *(In Progress)*
-me_madsonic *(In Progress)*
-me_ombi *(In Progress)*
-me_plex *(In Progress)*
-me_radar *(In Progress)*
-me_sonar *(In Progress)*
-me_transmission *(In Progress)*
+- me_lidar *(In Progress)*
+- me_madsonic *(In Progress)*
+- me_ombi *(In Progress)*
+- me_plex *(In Progress)*
+- me_radar *(In Progress)*
+- me_sonar *(In Progress)*
+- me_transmission *(In Progress)*
 
-## Networking
+### Networking
 
-ne_coredns *(In Progress)*
-ne_ddclient *(In Progress)*
-ne_maas *(In Progress)*
-ne_nginx *(In Progress)*
-ne_nginxproxymanager *(In Progress)*
+- ne_coredns *(In Progress)*
+- ne_ddclient *(In Progress)*
+- ne_maas *(In Progress)*
+- ne_nginx *(In Progress)*
+- ne_nginxproxymanager *(In Progress)*
 
-## PKI
+### PKI
 
-pk_bounca  *(Cleanup needed)*
-pk_stepca
-pk_stepcli
-pk_ejbca  *(Cleanup needed)*
+- pk_bounca  *(Cleanup needed)*
+- pk_stepca *(Cleanup needed)*
+- pk_stepcli *(Cleanup needed)*
+- pk_ejbca  *(Cleanup needed)*
 
-## Support (Used for dependency mapping)
+### Support (Used for dependency mapping)
 
-su_nodejs *(In Progress)*
-su_rushjs *(In Progress)*
-su_docker *(Cleanup needed)*
+- su_nodejs *(In Progress)*
+- su_rushjs *(In Progress)*
+- su_docker *(Cleanup needed)*
 
-## System Roles
+### System Roles
 
-sy_autoupgrade *(In Progress)*
-sy_ajenti *(In Progress)*
-sy_proxmox *(In Progress)*
-sy_vmsetup
-sy_olivetin *(In Progress)*
+- sy_autoupgrade *(In Progress)*
+- sy_ajenti *(In Progress)*
+- sy_proxmox *(In Progress)*
+- sy_vmsetup *(Cleanup needed)*
+- sy_olivetin *(In Progress)*
 
-## Other Tools
+### Other Tools
 
-tl_cyberchef *(In Progress)*
-tl_firefly3 *(In Progress)*
-tl_monica *(In Progress)*
-tl_polr *(In Progress)*
-tl_privatebin *(In Progress)*
+- tl_cyberchef *(In Progress)*
+- tl_firefly3 *(In Progress)*
+- tl_monica *(In Progress)*
+- tl_polr *(In Progress)*
+- tl_privatebin *(In Progress)*
