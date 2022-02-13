@@ -23,29 +23,3 @@
   become: true
   ansible.builtin.shell:
     cmd: "{{ mass_create_admin_cmd }}"
-
-  # ansible.builtin.expect:
-  #   command: "{{ maas_make_user_command }}"
-  #   chdir: "{{ my_app_dir }}"
-  #   creates: "{{ my_app_install_artifact }}"
-  #   responses:
-  #     Password: "{{ maas_admin_password }}"
-  #     Again: "{{ maas_admin_password }}"
-
-# - name: Replace SMTP host
-#   ansible.builtin.replace:
-#     path: "{{ environment_file }}"
-#     regexp: "globalSettings__mail__smtp__host=REPLACE"
-#     replace: "globalSettings__mail__smtp__host={{ smtp_host }}"
-#     owner: "{{ service_user }}"
-#     group: "{{ service_user }}"
-#     mode: '0700'
-
-# - name: Own all of the bitwarden folder
-#   ansible.builtin.file:
-#     path: "{{ bitwarden_dir }}"
-#     state: directory
-#     recurse: true
-#     owner: '{{ service_user }}'
-#     group: '{{ service_user }}'
-
