@@ -2,13 +2,13 @@
 - name: Create Postgres Password since it was not provided
   ansible.builtin.set_fact:
     postgres_dbpassword: "{{ lookup('community.general.random_string', length=24, special=false) }}"
-  when: postgres_dbpassword  == ""
-  no_log: True
+  when: not postgres_dbpassword
+  no_log: true
 
 - name: Create Encrypted Postgres Password
   ansible.builtin.set_fact:
     postgres_encrypted_password: "{{ postgres_dbpassword | hash('md5')  }}"
-  no_log: True
+  no_log: true
 
 - name: Create Postgres user
   become_user: "{{ default_postgres_system_user }}"
@@ -16,8 +16,8 @@
     name: "{{ postgres_dbuser }}"
     password: "{{ postgres_encrypted_password }}"
     role_attr_flags: CREATEDB
-  no_log: True
-  
+  no_log: true
+
 - name: Create Postgres DB and grant to user
   become_user: "{{ default_postgres_system_user }}"
   community.postgresql.postgresql_db:
@@ -26,7 +26,7 @@
     template: "template0"
     encoding: "UTF8"
 
-# The postgres HBA file is dependent on Major Version. All of this finagling is to get to the 
+# The postgres HBA file is dependent on Major Version. All of this finagling is to get to the
 # Major version for Postgres. If they change the format of the output of 'SHOW server_version;'
 # this will all break and I will cry big manly tears
 
@@ -64,4 +64,4 @@
     owner: "{{ default_postgres_system_user }}"
     group: "{{ default_postgres_system_user }}"
     mode: "0700"
-  when: postgres_pass_location  == ""
+  when: not postgres_pass_location
