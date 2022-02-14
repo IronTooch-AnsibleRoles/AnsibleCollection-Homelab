@@ -11,14 +11,14 @@ None
 Role Variables
 --------------
 
-- **app_name**: The name of the application that the DB is being deployed to support
+- **postgres_app_name**: The name of the application that the DB is being deployed to support
   - Defaults to *exampleapp*, definitely change this
 - **default_postgres_system_user**: The name of the system user that Postgres makes to administer the Db
   - Defaults to *postgres*, the standard for Debian Postgres
 - **postgres_db**: The name of the database to create.
-  - Defaults to *{{ app_name }}_db*
+  - Defaults to *{{ postgres_app_name }}_db*
 - **postgres_dbuser**: The name of the database user to create
-  - Defaults to *{{ app_name }}_dbuser*
+  - Defaults to *{{ postgres_app_name }}_dbuser*
 - **postgres_dbpassword**: The password to set for the DB user
   - Defaults to generating a 24 character password randomly with no special characters (I'm not confident that Postgres handles them well)
 - **pga_restricted_cidr**: The CIDR address and subnet that allows connections to the Db
