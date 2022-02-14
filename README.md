@@ -1,6 +1,6 @@
 # Ansible Collection - irontooch.homelab
 
-Documentation for the collection.
+Establishing a HomeLab environment with some basic infrastructure items. The general idea is to deploy all the things needed to self host, and just have the ability to select what you'd like from a "shopping list".
 
 ![GitHub all releases](https://img.shields.io/github/downloads-pre/irontooch/AnsibleCollection-Homelab/total)
 ![GitHub repo size](https://img.shields.io/github/repo-size/IronTooch/AnsibleCollection-Homelab)

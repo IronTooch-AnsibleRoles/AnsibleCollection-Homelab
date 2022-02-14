@@ -9,7 +9,7 @@
 - name: Add overwrite_certs.sh
   ansible.builtin.template:
     src: overwrite_certs.sh.j2
-    dest: "{{ bitwarden_dir }}/overwrite_certs.sh"
+    dest: "/etc/step-ca/overwrite_certs.sh"
     force: true
     mode: '0700'  # Ansible-Lint hates when this isn't set
     owner: "{{ service_user }}"
@@ -18,7 +18,7 @@
 - name: Copy initial cert to appropriate directory
   ansible.builtin.copy:
     src:  "/etc/step-ca/{{ external_domain }}.crt"
-    dest: "{{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/certificate.crt"
+    dest: "{{ bitwarden_dir }}/bwdata/ssl/{{ external_domain }}/certificate.crt"
     remote_src: true
     force: true
     owner: "{{ service_user }}"
@@ -28,7 +28,7 @@
 - name: Copy initial key to appropriate directory
   ansible.builtin.copy:
     src:  "/etc/step-ca/{{ external_domain }}.key"
-    dest: "{{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/private.key"
+    dest: "{{ bitwarden_dir }}/bwdata/ssl/{{ external_domain }}/private.key"
     remote_src: true
     force: true
     owner: "{{ service_user }}"

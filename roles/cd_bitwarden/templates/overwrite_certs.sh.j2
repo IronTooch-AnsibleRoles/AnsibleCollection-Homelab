@@ -1,8 +1,13 @@
 #!/bin/bash
 
+logger "Starting Cert Renewer Override..."
 cp /etc/step-ca/{{ external_domain }}.crt {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/certificate.crt
 cp /etc/step-ca/{{ external_domain }}.key {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/private.key
 chmod 0640 {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/certificate.crt
 chmod 0640 {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/private.key
 chown {{ service_user }}:{{ service_user }} {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/certificate.crt
 chown {{ service_user }}:{{ service_user }} {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/private.key
+/opt/bitwarden/bitwarden.sh updateself
+/opt/bitwarden/bitwarden.sh update
+/usr/bin/env sh -c "! systemctl --quiet is-enabled %i.service || systemctl try-reload-or-restart %i"
+logger "Cert Renew Override Complete..."
