@@ -122,7 +122,6 @@
     owner: 'www-data'
     group: 'www-data'
 
-
 - name: Django collectstatic
   community.general.django_manage:
     command: "collectstatic"
@@ -146,13 +145,3 @@
     name: nginx
     state: restarted
     enabled: yes
-
-
-
-
-    
-    
-    
-
-
-
