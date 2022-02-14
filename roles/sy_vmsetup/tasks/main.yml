@@ -51,3 +51,7 @@
   copy:
     content: "{{ default_user }}  ALL=(ALL) NOPASSWD:ALL" 
     dest: "/etc/sudoers.d/{{ default_user }}"
+
+- name: Set Timezone for VM
+  community.general.timezone:
+    name: America/New_York
