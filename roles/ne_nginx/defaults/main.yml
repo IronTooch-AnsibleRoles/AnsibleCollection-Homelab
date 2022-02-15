@@ -1,0 +1,4 @@
+---
+# defaults file for ne_nginx
+top_level_domain: example.com
+external_cert_path: /etc/letsencrypt/live/{{ top_level_domain }}
