@@ -26,10 +26,9 @@ Installing from Github is accomplished via: `ansible-galaxy collection install g
 
 ### Database
 
-- db_mongodb *(Cleanup needed)*
-- db_postgres
-- db_mysql *(In Progress)*
 - db_missionkontrol  *(Cleanup needed)*
+- db_postgres
+
 
 ### File Management
 
