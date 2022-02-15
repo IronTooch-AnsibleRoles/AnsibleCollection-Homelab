@@ -1,57 +1,24 @@
 ---
-# tasks file for sy_vmsetup
-- name: Install base packages
+- name: Install chrony if it's missing
   ansible.builtin.apt:
-    name:  
-      - mlocate
-      - vim
-      - screen
-      - bat
-      - qemu-guest-agent
-      - net-tools
-      - fd-find
-      - chrony
+    name: chrony
     state: present
     update_cache: true
-    force: true
-  register: apt_status
-  until: apt_status is success
-  delay: 6
-  retries: 10
 
-- name: Update /etc/issue
+- name: Add the PTP KVM Module
+  community.general.modprobe:
+    name: ptp_kvm
+    state: present
+
+- name: Add ptp_kvm to the module to be loaded
+  ansible.builtin.lineinfile:
+    path: /etc/modules-load.d/ptp_kvm.conf
+    regexp: 'ptp_kvm'
+    line: ptp_kvm
+
+- name: Fix Chrony
   ansible.builtin.template:
-    src: issue.j2
-    dest: /etc/issue
+    src: chrony.conf.j2
+    dest: /etc/chrony/chrony.conf
     force: true
     mode: '0770'  # Ansible-Lint hates when this isn't set
-
-- name: Update user's .bashrc
-  ansible.builtin.template:
-    src: user.bashrc.j2
-    dest: /home/{{ default_user }}/.bashrc
-    force: true
-    mode: '0770'  # Ansible-Lint hates when this isn't set
-
-- name: Update skel's .bashrc
-  ansible.builtin.template:
-    src: user.bashrc.j2
-    dest: /etc/skel/.bashrc
-    force: true
-    mode: '0770'  # Ansible-Lint hates when this isn't set
-
-- name: Update root's .bashrc
-  ansible.builtin.template:
-    src: root.bashrc.j2
-    dest: /root/.bashrc
-    force: true
-    mode: '0770'  # Ansible-Lint hates when this isn't set
-
-- name: Add local user to Sudoers
-  copy:
-    content: "{{ default_user }}  ALL=(ALL) NOPASSWD:ALL" 
-    dest: "/etc/sudoers.d/{{ default_user }}"
-
-- name: Set Timezone for VM
-  community.general.timezone:
-    name: America/New_York
