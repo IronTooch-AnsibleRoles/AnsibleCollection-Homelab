@@ -1,38 +1,91 @@
-Role Name
+Bitwarden
 =========
 
-A brief description of the role goes here.
+Installs Bitwarden on a bare-metal server. Configures for self-hosting with a Smallstep Certificate Authority (Another role within the collection)
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+None
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- **service_user**: The system user for Bitwarden service
+  - Defaults to *bitwarden_user*
+- **bitwarden_sh_url**: The URL that is the source of the Bitwarden shell file
+  - Defaults to *https://raw.githubusercontent.com/bitwarden/server/master/scripts/bitwarden.sh*
+- **external_domain**: The external domain that Bitwarden will be accessible by
+  - Defaults to *bitwarden.example.com*
+- **installation_id**: The installation ID given by Bitwarden. Must be changed for success
+  - Defaults to *aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa*
+- **installation_key**: The installation key given by Bitwarden. Must be changed for success
+  - Defaults to *aaaaaaaaaaaaaaaaaaaa*
+- **bitwarden_dir**: The directory to install Bitwarden in
+  - Defaults to */opt/bitwarden*
+- **smtp_host**: The host for SMTP for Bitwarden to send emails. Highly recommended
+  - Defaults to *smtp.gmail.com*
+- **smtp_port**: The port for SMTP for Bitwarden to send emails.
+  - Defaults to *587*
+- **smtp_ssl**: Whether SSL is in use for SMTP
+  - Defaults to *true*
+- **smtp_username**: The username for SMTP for Bitwarden to send emails. Highly recommended
+  - Defaults to *my_user@gmail.com*
+- **smtp_password**: The password for SMTP for Bitwarden to send emails. Highly recommended
+  - Defaults to *my_password*
+- **admin_user_email**: The user the email will appear to come from
+  - Defaults to *bitwarden_admin@example.com*
+- **cert_renewer_path**: The place to put the service that renews certificates
+  - Defaults to */etc/systemd/system/cert-renewer@bitwarden.service.d*
+- **environment_file**: The location of Bitwarden's environment file
+  - Defaults to *{{ bitwarden_dir }}/bwdata/env/global.override.env*
+- **reverse_proxy_servers**: The IP addresses for any Reverse Proxy Servers that will serve Bitwarden externally. Recommended to override.
+  - Defaults to *[11.22.33.44, 55.66.77.88]*
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+No role dependencies.
 
-Example Playbook
+Example Playbooks
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```yaml
+# The bare minimum to deploy Bitwarden. The default SMTP uses Gmail
+    - role: 'irontooch.homelab.cd_bitwarden'
+      vars:
+        external_domain: "bitwarden.mynewdomain.org"
+        installation_id: "e840f3fb586d44689ca1f6e9cd7440d0e840"
+        installation_key: "509ce20660e44d8980bc"
+        smtp_username: "my_email_user@gmail.com"
+        smtp_password: "my_email_password"
+        reverse_proxy_servers:
+          - 192.168.10.2
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+# Use a seperate SMTP server other than Gmail with different SMTP settings and multiple reverse proxy servers
+    - role: 'irontooch.homelab.cd_bitwarden'
+      vars:
+        external_domain: "bitwarden.mynewdomain.org"
+        installation_id: "e840f3fb586d44689ca1f6e9cd7440d0e840"
+        installation_key: "509ce20660e44d8980bc"
+        smtp_username: "my_email_user@sendgrid.com"
+        smtp_password: "my_email_password"
+        smtp_host: "smtp.sendgrid.net"
+        smtp_port: 25
+        smtp_ssl: false
+        reverse_proxy_servers:
+          - 172.16.10.2
+          - 172.16.20.2
+```
 
 License
 -------
 
-BSD
+GPL v3.0
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Author is IronTooch
