@@ -1,0 +1,100 @@
+---
+
+- name: Check if Admin Created Flag file is present
+  ansible.builtin.stat:
+    path: "{{ maas_admincreated_flag_path }}"
+  register: maas_admincreated_flag
+
+- name: Make command execution for maas createadmin with Github ID
+  set_fact:
+    maas_createadmin_var: >-
+      maas
+      createadmin
+      --username {{ maas_admin_user }}
+      --password {{ maas_admin_password }}
+      --email {{ maas_admin_email }}
+      --ssh-import gh:{{ maas_github_id }}
+  when: maas_github_id is defined and not maas_admincreated_flag.stat.exists
+
+- name: Make command execution for maas createadmin without Github ID
+  set_fact:
+    maas_createadmin_var: >-
+      maas
+      createadmin
+      --username {{ maas_admin_user }}
+      --password {{ maas_admin_password }}
+      --email {{ maas_admin_email }}
+  when: maas_github_id is not defined and not maas_admincreated_flag.stat.exists
+
+- name: Make command execution for maas apikey
+  set_fact:
+    maas_createapi_var: >-
+      maas
+      apikey
+      --username {{ maas_admin_user }}
+      > {{ maas_api_key_path }}
+  when: not maas_admincreated_flag.stat.exists
+
+- name: Print Create API command
+  ansible.builtin.debug:
+    msg: "{{ maas_createapi_var }}"
+  when: not maas_admincreated_flag.stat.exists
+
+- name: Make Admin User
+  become: true
+  ansible.builtin.shell: |
+    {{ maas_createadmin_var }}
+    {{ maas_createapi_var }}
+  when: not maas_admincreated_flag.stat.exists
+
+- name: Touch a file to demonstrate MaaS Admin User is created
+  ansible.builtin.file:
+    path: "{{ maas_admincreated_flag_path }}"
+    state: touch
+    mode: '0700'
+  when: not maas_admincreated_flag.stat.exists
+
+- name: Copy MaaS Password to host location
+  ansible.builtin.copy:
+    content: "{{ maas_admin_password }}"
+    dest: "{{ maas_var_location }}"
+    force: true
+    owner: "root"
+    group: "root"
+    mode: "0700"
+  when: maas_var_location and not maas_admincreated_flag.stat.exists
+
+- name: Make MaaS API keys
+  ansible.builtin.shell:
+    cmd: "maas apikey --username {{ maas_admin_user }} > {{ maas_api_key_path }}"
+    creates: "{{ maas_api_key_path }}"
+  changed_when: false
+
+- name: Get API keys
+  ansible.builtin.slurp:
+    src: "{{ maas_api_key_path }}"
+  register: maas_api_key
+
+- name: Add MaaS URL to Bash shell
+  ansible.builtin.lineinfile:
+    path: /etc/bash.bashrc
+    state: present
+    create: true
+    mode: "0644"
+    line: "export MAAS_URL='{{ maas_url }}'"
+
+- name: Add MaaS API to Bash shell
+  ansible.builtin.lineinfile:
+    path: /etc/bash.bashrc
+    state: present
+    create: true
+    mode: "0644"
+    line: "export MAAS_API='{{ maas_api_key.content | b64decode }}'"
+
+- name: Add MaaS Loginto Bash shell
+  ansible.builtin.lineinfile:
+    path: /etc/bash.bashrc
+    state: present
+    create: true
+    mode: "0644"
+    line: alias maas_login='maas login {{ maas_admin_user }} $MAAS_URL $MAAS_API'

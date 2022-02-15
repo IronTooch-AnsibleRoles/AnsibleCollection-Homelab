@@ -1,0 +1,3 @@
+---
+# defaults file for sy_serversetup
+default_user: local_admin

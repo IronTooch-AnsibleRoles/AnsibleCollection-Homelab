@@ -1,0 +1,57 @@
+---
+# tasks file for sy_serversetup
+- name: Install base packages
+  ansible.builtin.apt:
+    name:  
+      - mlocate
+      - vim
+      - screen
+      - bat
+      - qemu-guest-agent
+      - net-tools
+      - fd-find
+      - chrony
+    state: present
+    update_cache: true
+    force: true
+  register: apt_status
+  until: apt_status is success
+  delay: 6
+  retries: 10
+
+- name: Update /etc/issue
+  ansible.builtin.template:
+    src: issue.j2
+    dest: /etc/issue
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Update user's .bashrc
+  ansible.builtin.template:
+    src: user.bashrc.j2
+    dest: /home/{{ default_user }}/.bashrc
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Update skel's .bashrc
+  ansible.builtin.template:
+    src: user.bashrc.j2
+    dest: /etc/skel/.bashrc
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Update root's .bashrc
+  ansible.builtin.template:
+    src: root.bashrc.j2
+    dest: /root/.bashrc
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Add local user to Sudoers
+  copy:
+    content: "{{ default_user }}  ALL=(ALL) NOPASSWD:ALL" 
+    dest: "/etc/sudoers.d/{{ default_user }}"
+
+- name: Set Timezone for VM
+  community.general.timezone:
+    name: America/New_York

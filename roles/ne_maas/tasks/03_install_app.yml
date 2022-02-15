@@ -1,0 +1,37 @@
+---
+- name: Check if Install Flag file is present
+  ansible.builtin.stat:
+    path: "{{ maas_installed_flag_path }}"
+  register: maas_install_flag
+
+- name: Install MaaS
+  community.general.snap:
+    name: "maas"
+    state: present
+    classic: true
+    channel: "{{ maas_version }}/stable"
+  when: not maas_install_flag.stat.exists
+
+- name: Touch a file to demonstrate MaaS is installed
+  ansible.builtin.file:
+    path: "{{ maas_installed_flag_path }}"
+    state: touch
+    mode: '0700'
+  when: not maas_install_flag.stat.exists
+
+- name: Check if Initialize Flag file is present
+  ansible.builtin.stat:
+    path: "{{ maas_initialized_flag_path }}"
+  register: maas_init_flag
+
+- name: Initialize MaaS
+  ansible.builtin.command:
+    cmd: "maas init region+rack --maas-url {{ maas_url }} --database-uri \"{{ postgres_db_uri }}\""
+  when: not maas_init_flag.stat.exists
+
+- name: Touch a file to demonstrate MaaS is initialized
+  ansible.builtin.file:
+    path: "{{ maas_initialized_flag_path }}"
+    state: touch
+    mode: '0700'
+  when: not maas_init_flag.stat.exists

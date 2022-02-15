@@ -1,0 +1,9 @@
+---
+- name: Make MaaS Configuration Changes
+  become: true
+  ansible.builtin.shell: |
+    maas_login
+    maas {{ maas_admin_user }} maas set-config name=upstream_dns value="{{ maas_dns_forwarder }}"
+    maas {{ maas_admin_user }} maas set-config name=maas_name value="{{ maas_region_name }}"
+    maas {{ maas_admin_user }} maas set-config name=completed_intro value="true"
+  changed_when: false
