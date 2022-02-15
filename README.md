@@ -37,16 +37,12 @@ Installing from Github is accomplished via: `ansible-galaxy collection install g
 ### Networking
 
 - ne_coredns *(In Progress)*
-- ne_ddclient *(In Progress)*
-- ne_maas *(In Progress)*
-- ne_nginx *(In Progress)*
 - ne_nginxproxymanager *(In Progress)*
 
 ### PKI
 
 - pk_stepca *(Cleanup needed)*
 - pk_stepcli *(Cleanup needed)*
-- pk_ejbca  *(Cleanup needed)*
 
 ### Support (Used for dependency mapping)
 
