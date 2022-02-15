@@ -12,7 +12,4 @@
       - acl
       - sudo
       - python3-pexpect
-      - maas
-      - maas-cli
     state: present
-
