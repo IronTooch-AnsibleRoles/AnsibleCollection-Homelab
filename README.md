@@ -35,16 +35,6 @@ Installing from Github is accomplished via: `ansible-galaxy collection install g
 
 - fi_jirafeau *(In Progress)*
 
-### Media and Media Management
-
-- me_lidar *(In Progress)*
-- me_madsonic *(In Progress)*
-- me_ombi *(In Progress)*
-- me_plex *(In Progress)*
-- me_radar *(In Progress)*
-- me_sonar *(In Progress)*
-- me_transmission *(In Progress)*
-
 ### Networking
 
 - ne_coredns *(In Progress)*
