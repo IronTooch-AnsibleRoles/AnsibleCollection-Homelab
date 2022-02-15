@@ -1,0 +1,21 @@
+---
+# tasks file for ne_maas
+- name: Install dependencies
+  ansible.builtin.include_tasks:
+    file: "01_install_dependencies.yml"
+
+- name: Download and Install my_app
+  ansible.builtin.include_tasks:
+    file: "03_install_app.yml"
+
+- name: Configure Environment
+  ansible.builtin.include_tasks:
+    file: "04_configure_app.yml"
+
+- name: Configure MaaS
+  ansible.builtin.include_tasks:
+    file: "05_configure_maas.yml"
+
+- name: Print the url for MaaS
+  ansible.builtin.debug:
+    msg: "http://{{ ansible_default_ipv4.address }}:5240/MAAS"

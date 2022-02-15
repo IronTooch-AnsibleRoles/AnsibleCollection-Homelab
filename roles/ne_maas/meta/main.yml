@@ -1,0 +1,17 @@
+galaxy_info:
+  role_name: ne_maas
+  namespace: irontooch
+  author: IronTooch
+  description: Deploys Ubuntu's Metal as a Service (MaaS)
+  license: GPL-3.0-only
+  min_ansible_version: 2.1
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+
+  galaxy_tags: []
+
+dependencies:
+  - /mnt/c/Users/steve/Nextcloud/Development/Git/AnsibleCollections/irontooch/homelab/roles/db_postgresql

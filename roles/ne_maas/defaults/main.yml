@@ -1,0 +1,17 @@
+---
+# defaults file for ne_maas
+maas_version: "3.1"
+maas_repo: "ppa:maas/{{ maas_version }}"
+maas_admin_user: "maas_admin"
+maas_admin_email: "maas_admin@maas.example.com"
+# maas_github_id: "gh:IronTooch"
+maas_admin_password: "abcd1234"
+maas_location: "/var/snap/maas"
+maas_var_location: "{{ maas_location }}/maas_admin_pw.txt"
+maas_installed_flag_path: "{{ maas_location }}/install_{{ maas_version }}_flag"
+maas_initialized_flag_path: "{{ maas_location }}/initialized_{{ maas_version }}_flag"
+maas_admincreated_flag_path: "{{ maas_location }}/admincreated_{{ maas_version }}_flag"
+maas_api_key_path: "{{ maas_location }}/api_key"
+maas_url: "http://{{ ansible_default_ipv4.address }}:5240/MAAS"
+maas_dns_forwarder: 1.1.1.1
+maas_region_name: "Local Region"
