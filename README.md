@@ -23,7 +23,6 @@ Installing from Github is accomplished via: `ansible-galaxy collection install g
 ### Credentials
 
 - cd_bitwarden
-- cd_vault *(In Progress)*
 
 ### Database
 
