@@ -1,8 +1,0 @@
-#!/bin/bash
-
-cp /etc/step-ca/{{ external_domain }}.crt {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/certificate.crt
-cp /etc/step-ca/{{ external_domain }}.key {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/private.key
-chmod 0640 {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/certificate.crt
-chmod 0640 {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/private.key
-chown {{ service_user }}:{{ service_user }} {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/certificate.crt
-chown {{ service_user }}:{{ service_user }} {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/private.key

@@ -1,5 +1,0 @@
----
-# defaults file for su-nodejs
-
-node_version: "v16.13.2"
-distro: "linux-x64"

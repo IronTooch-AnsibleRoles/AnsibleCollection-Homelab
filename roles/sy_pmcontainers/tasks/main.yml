@@ -1,6 +1,0 @@
----
-# tasks file for sy_pmcontainers
-    # touch /etc/.pve-ignore.hosts
-    # touch /etc/.pve-ignore.hostname
-
-    # apt-get remove apparmor --purge
