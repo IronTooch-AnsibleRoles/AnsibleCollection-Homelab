@@ -92,7 +92,7 @@ Installing from Github is accomplished via: `ansible-galaxy collection install g
 - sy_autoupgrade *(In Progress)*
 - sy_ajenti *(In Progress)*
 - sy_proxmox *(In Progress)*
-- sy_vmsetup *(Cleanup needed)*
+- sy_serversetup *(Cleanup needed)*
 - sy_olivetin *(In Progress)*
 
 ### Other Tools
