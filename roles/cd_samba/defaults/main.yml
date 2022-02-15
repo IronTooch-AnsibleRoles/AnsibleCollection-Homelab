@@ -1,0 +1,6 @@
+---
+# defaults file for cd_samba
+tld: 
+admin_password:
+dns_forwarder: 8.8.8.8
+hostname: 
