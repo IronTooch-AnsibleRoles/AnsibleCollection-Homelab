@@ -58,6 +58,7 @@ services:
       - ./certs:/certs
       - /var/run/docker.sock:/var/run/docker.sock
       - ./custom-templates:/templates
+#     - ../authentik/certs:/etc/letsencrypt/live
       - geoip:/geoip
     env_file:
       - .env

@@ -1,5 +1,31 @@
 ---
+- name: Create directory for authentik
+  ansible.builtin.file:
+    path: "{{ authentik_base_directory }}"
+    state: directory
+    mode: '0700'
+    owner: "{{ authentik_service_user }}"
+    group: "{{ authentik_service_user }}"
+
+- name: Template out .env file
+  ansible.builtin.template:
+    src: .env.j2
+    dest: "{{ authentik_base_directory }}/.env"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+    owner: "{{ authentik_service_user }}"
+    group: "{{ authentik_service_user }}"
+
+- name: Template out docker compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ authentik_base_directory }}/docker-compose.yml"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+    owner: "{{ authentik_service_user }}"
+    group: "{{ authentik_service_user }}"
+
 - name: Create and start services
   community.docker.docker_compose:
-    project_src: flask
+    project_src: "{{ authentik_base_directory }}"
     state: present
