@@ -1,0 +1,31 @@
+#
+# Note: After making changes to this file you need to run the `rebuild` or `update`
+# command for them to be applied.
+
+url: https://{{ external_domain }}
+generate_compose_config: true
+generate_nginx_config: true
+http_port: 80
+https_port: 443
+compose_version:
+captcha: false
+ssl: true
+ssl_versions:
+ssl_ciphersuites:
+ssl_managed_lets_encrypt: false
+ssl_certificate_path: /etc/ssl/{{ external_domain }}/certificate.crt
+ssl_key_path: /etc/ssl/{{ external_domain }}/private.key
+ssl_ca_path:
+ssl_diffie_hellman_path:
+nginx_header_content_security_policy: "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://haveibeenpwned.com https://www.gravatar.com; child-src 'self' https://*.duosecurity.com https://*.duofederal.com; frame-src 'self' https://*.duosecurity.com https://*.duofederal.com; connect-src 'self' wss://{0} https://api.pwnedpasswords.com https://2fa.directory; object-src 'self' blob:;"
+push_notifications: true
+database_docker_volume: false
+#
+# Defines "real" IPs in nginx.conf. Useful for defining proxy servers that forward the
+# client IP address.
+# Learn more: https://nginx.org/en/docs/http/ngx_http_realip_module.html
+real_ips:
+{% for proxy_server in reverse_proxy_servers %}
+  - {{ proxy_server }}
+{% endfor %}
+enable_key_connector: false
