@@ -36,7 +36,7 @@ esac
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -69,7 +69,7 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
+    alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
@@ -99,9 +99,11 @@ fi
 #fi
 IPADDR=$(hostname -I | awk '{$1=$1};1')
 
-PS1="\[\033[1m\]\[\033[33m\][\[\033[31m\]\u\[\033[34m\]@\[\033[32m\]\h\[\033[34m\]($IPADDR)\[\033[33m\]: \[\033[36m\]\w\[\033[33m\]]\\$ \[\033[0m\]"
+PS1="\[\033[1m\]\[\033[33m\][\[\033[37m\]\u\[\033[34m\]@\[\033[32m\]\h\[\033[34m\]($IPADDR)\[\033[33m\]: \[\033[36m\]\w\[\033[33m\]]\\$ \[\033[0m\]"
 
 CDPATH=.:/etc:/var/log:/var:/opt:/
 
-alias wipe-syslog='truncate -s 0 /var/log/syslog'
+alias wipe-syslog='sudo truncate -s 0 /var/log/syslog'
 alias mkdir='mkdir -pv'
+alias svim='sudo vim'
+alias sync-time='sudo chronyc -a makestep'
