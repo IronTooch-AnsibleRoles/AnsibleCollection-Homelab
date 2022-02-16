@@ -1,0 +1,14 @@
+---
+- name: Install Dependency packages
+  package:
+    name:
+      - acl
+      - sudo
+      - python3-pexpect
+    state: present
+
+- name: Install Docker Pip
+  ansible.builtin.pip:
+    state: present
+    name:
+      - docker-compose

@@ -16,6 +16,10 @@
 - name: Install Step application from debfile
   ansible.builtin.apt:
     deb: "/tmp/smallstep_step.deb"
+  register: deb_status
+  until: deb_status is success
+  delay: 6
+  retries: 10
 
 - name: Add STEPPATH to /etc/profiles.d/
   ansible.builtin.copy:
@@ -26,9 +30,9 @@
     group: "root"
     mode: "0644"
 
-- name: Add STEPPATH to /home/{{ system_user }}/.bashrc
+- name: Add STEPPATH to /home/{{ smallstep_system_user }}/.bashrc
   ansible.builtin.lineinfile:
-    path: /home/{{ system_user }}/.bashrc
+    path: /home/{{ smallstep_system_user }}/.bashrc
     state: present
     line: 'export STEPPATH=/etc/step-ca'
 
@@ -43,15 +47,15 @@
     path: "{{ item }}"
     state: directory
     mode: '0700'
-    owner: "{{ system_user }}"
-    group: "{{ system_user }}"
+    owner: "{{ smallstep_system_user }}"
+    group: "{{ smallstep_system_user }}"
   loop:
     - /etc/step-ca
 
 - name: Make current version file (to save re-installs / support idempotence)
   copy:
     content: "{{ latest_release.json.tag_name }}"
-    dest: "{{ installed_version_path }}"
-    owner: "{{ system_user }}"
-    group: "{{ system_user }}"
+    dest: "{{ smallstep_installed_version_path }}"
+    owner: "{{ smallstep_system_user }}"
+    group: "{{ smallstep_system_user }}"
     mode: '0770'
