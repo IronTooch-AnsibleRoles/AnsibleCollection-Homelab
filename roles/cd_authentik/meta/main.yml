@@ -13,5 +13,5 @@ galaxy_info:
 
   galaxy_tags: []
 
-dependencies: 
-  - '/mnt/c/Users/steve/Nextcloud/Development/Git/AnsibleCollections/irontooch/homelab/roles/su_docker'
+dependencies:
+  - '../../AnsibleCollections/irontooch/homelab/roles/su_docker'

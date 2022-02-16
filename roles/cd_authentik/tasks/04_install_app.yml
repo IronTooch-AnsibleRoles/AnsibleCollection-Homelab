@@ -29,3 +29,7 @@
   community.docker.docker_compose:
     project_src: "{{ authentik_base_directory }}"
     state: present
+
+
+# Active LDAP
+# Maybe Active Other providers
