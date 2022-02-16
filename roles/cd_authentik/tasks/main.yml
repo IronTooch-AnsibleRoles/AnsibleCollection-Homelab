@@ -26,4 +26,3 @@
       - "Congrats! Authentik is installed at http://{{ ansible_default_ipv4.address }}/if/flow/initial-setup/"
       - "Default user is akadmin"
     verbosity: 0
-

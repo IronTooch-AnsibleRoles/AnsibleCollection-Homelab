@@ -1,12 +1,4 @@
 ---
-- name: Create directory for authentik
-  ansible.builtin.file:
-    path: "{{ authentik_base_directory }}"
-    state: directory
-    mode: '0700'
-    owner: "{{ authentik_service_user }}"
-    group: "{{ authentik_service_user }}"
-
 - name: Template out .env file
   ansible.builtin.template:
     src: .env.j2
@@ -30,6 +22,16 @@
     project_src: "{{ authentik_base_directory }}"
     state: present
 
-
-# Active LDAP
-# Maybe Active Other providers
+# Make symbolic links between StepCA certs and Authentik Certs
+- name: Make Symbolic Links between actual certs and Authentik cert location
+  ansible.builtin.file:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+    owner: "{{ authentik_service_user }}"
+    group: "{{ authentik_service_user }}"
+    state: link
+  loop:
+    - {source: "{{ smallstep_web_certificate_path }}", destination: "{{ authentik_web_certificate_path }}"}
+    - {source: "{{ smallstep_web_key_path }}", destination: "{{ authentik_web_key_path }}"}
+    - {source: "{{ smallstep_ldap_certificate_path }}", destination: "{{ authentik_ldap_certificate_path }}"}
+    - {source: "{{ smallstep_ldap_key_path }}", destination: "{{ authentik_ldap_key_path }}"}
