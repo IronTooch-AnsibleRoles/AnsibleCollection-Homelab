@@ -16,3 +16,5 @@ key_full_path: "/etc/step-ca/{{ key_filename }}"
 installed_version_path: /etc/step-ca/version.txt
 step_subject_names: "--san {{ subject_names | join (\" --san \") }}"
 dependent_service: "" #Options nginx/proxmox
+cert_renewer_service: "cert-renewer@.service"
+cert_renewer_timer_service: "cert-renewer@.timer"

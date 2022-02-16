@@ -55,7 +55,7 @@
 
 - name: Check to see if Services are Deployed
   ansible.builtin.stat:
-    path: "/etc/systemd/system/cert-renewer@.timer"
+    path: "/etc/systemd/system/{{ cert_renewer_timer_service }}"
   register: services_deployed
   tags: install_services
 
