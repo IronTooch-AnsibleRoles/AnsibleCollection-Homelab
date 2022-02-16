@@ -1,20 +1,20 @@
 ---
 # defaults file for pk_stepcli
-system_user: smallstep_user
-ca_url: ca.example.com
-ca_footprint: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-provisioner_password: aaaaaaa
-subject_names:
+smallstep_system_user: smallstep_user
+smallstep_ca_url: ca.example.com
+smallstep_ca_footprint: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+smallstep_provisioner_password: aaaaaaa
+smallstep_subject_names:
   - "{{ ansible_hostname }}.{{ top_level_domain }}"
   - "{{ ansible_hostname }}.prod.{{ top_level_domain }}"
   - "{{ ansible_default_ipv4.address }}"
-certificate_name: "{{ subject_names[0] }}"
-certificate_filename: "{{ certificate_name }}.crt"
-certificate_full_path: "/etc/step-ca/{{ certificate_filename }}"
-key_filename: "{{ certificate_name }}.key"
-key_full_path: "/etc/step-ca/{{ key_filename }}"
-installed_version_path: /etc/step-ca/version.txt
-step_subject_names: "--san {{ subject_names | join (\" --san \") }}"
-dependent_service: "" #Options nginx/proxmox
+smallstep_certificate_name: "{{ smallstep_subject_names[0] }}"
+smallstep_certificate_filename: "{{ smallstep_certificate_name }}.crt"
+smallstep_certificate_full_path: "/etc/step-ca/{{ smallstep_certificate_filename }}"
+smallstep_key_filename: "{{ smallstep_certificate_name }}.key"
+smallstep_key_full_path: "/etc/step-ca/{{ smallstep_key_filename }}"
+smallstep_installed_version_path: /etc/step-ca/version.txt
+smallstep_step_smallstep_subject_names: "--san {{ smallstep_subject_names | join (\" --san \") }}"
+smallstep_dependent_service: "" #Options nginx/proxmox
 cert_renewer_service: "cert-renewer@.service"
 cert_renewer_timer_service: "cert-renewer@.timer"

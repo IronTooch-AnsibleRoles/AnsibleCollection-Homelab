@@ -9,8 +9,8 @@ Type=oneshot
 User=root
 
 Environment=STEPPATH=/etc/step-ca \
-            CERT_LOCATION={{ certificate_full_path }} \
-            KEY_LOCATION={{ key_full_path }}
+            CERT_LOCATION={{ smallstep_certificate_full_path }} \
+            KEY_LOCATION={{ smallstep_key_full_path }}
 
 ; ExecCondition checks if the certificate is ready for renewal,
 ; based on the exit status of the command.

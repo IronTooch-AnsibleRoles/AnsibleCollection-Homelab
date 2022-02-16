@@ -3,32 +3,32 @@
 
 - name: Print certificate Name
   ansible.builtin.debug:
-    msg: " {{ certificate_name }} "
+    msg: " {{ smallstep_certificate_name }} "
     verbosity: 0
 
 - name: Print certificate filename
   ansible.builtin.debug:
-    msg: " {{ certificate_name }} "
+    msg: " {{ smallstep_certificate_name }} "
     verbosity: 0
 
 - name: Print key filename
   ansible.builtin.debug:
-    msg: " {{ key_filename }} "
+    msg: " {{ smallstep_key_filename }} "
     verbosity: 0
 
 - name: Print subject names
   ansible.builtin.debug:
-    msg: " {{ step_subject_names }} "
+    msg: " {{ smallstep_step_smallstep_subject_names }} "
     verbosity: 0
 
 - name: Make full Step Install command
   set_fact:
     cert_request_command: >-
       step ca certificate
-      {{ certificate_name }}
-      {{ certificate_filename }}
-      {{ key_filename }}
-      {{ step_subject_names }}
+      {{ smallstep_certificate_name }}
+      {{ smallstep_certificate_filename }}
+      {{ smallstep_key_filename }}
+      {{ smallstep_step_smallstep_subject_names }}
 
 - name: Print certificate request command
   ansible.builtin.debug:
@@ -40,8 +40,8 @@
     content: "{{ cert_request_command }}"
     dest: /etc/step-ca/cert_request.sh
     force: true
-    owner: "{{ system_user }}"
-    group: "{{ system_user }}"
+    owner: "{{ smallstep_system_user }}"
+    group: "{{ smallstep_system_user }}"
     mode: "0700"
 
 
@@ -49,9 +49,9 @@
   ansible.builtin.expect:
     command: "{{ cert_request_command }}"
     chdir: "/etc/step-ca"
-    creates: "{{ certificate_filename }}"
+    creates: "{{ smallstep_certificate_filename }}"
     responses:
       (?i)JWK: "\r"
-      "Please enter the password to decrypt the provisioner key:": "{{ provisioner_password }}"
+      "Please enter the password to decrypt the provisioner key:": "{{ smallstep_provisioner_password }}"
   environment:
     STEPPATH: /etc/step-ca

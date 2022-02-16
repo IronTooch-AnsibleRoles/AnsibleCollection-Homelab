@@ -1,8 +1,8 @@
 
 [Service]
 ExecStartPost=
-ExecStartPost=cp {{ certificate_full_path }} /etc/pve/nodes/{{ node_name }}/pve-ssl.pem
-ExecStartPost=cp {{ key_full_path }} /etc/pve/nodes/{{ node_name }}/pve-ssl.key
+ExecStartPost=cp {{ smallstep_certificate_full_path }} /etc/pve/nodes/{{ node_name }}/pve-ssl.pem
+ExecStartPost=cp {{ smallstep_key_full_path }} /etc/pve/nodes/{{ node_name }}/pve-ssl.key
 ExecStartPost=chmod 0640 /etc/pve/nodes/{{ node_name }}/pve-ssl.key
 ExecStartPost=chmod 0640 /etc/pve/nodes/{{ node_name }}/pve-ssl.pem
 ExecStartPost=/usr/bin/env sh -c "! systemctl --quiet is-enabled %i.service || systemctl try-reload-or-restart %i"

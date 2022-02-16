@@ -7,11 +7,11 @@
 # Remove old certs
 # link new certs
 
-# Trim certificate_name to be just hostname. Must match actual node name in Proxmox
+# Trim smallstep_certificate_name to be just hostname. Must match actual node name in Proxmox
 
 - name: Set node name
   ansible.builtin.set_fact:
-    node_name:  "{{ certificate_name  | split('.') | first }}"
+    node_name:  "{{ smallstep_certificate_name  | split('.') | first }}"
 
 - name: Delete files from managed node
   file:
@@ -22,10 +22,10 @@
   - "/etc/pve/nodes/{{ node_name }}/pve-ssl.pem"
 
 - name: Ram home the Pem file
-  ansible.builtin.raw: "cp {{ certificate_full_path }} /etc/pve/nodes/{{ node_name }}/pve-ssl.pem"
+  ansible.builtin.raw: "cp {{ smallstep_certificate_full_path }} /etc/pve/nodes/{{ node_name }}/pve-ssl.pem"
 
 - name: Ram home the Key file
-  ansible.builtin.raw: "cp {{ key_full_path }} /etc/pve/nodes/{{ node_name }}/pve-ssl.key"
+  ansible.builtin.raw: "cp {{ smallstep_key_full_path }} /etc/pve/nodes/{{ node_name }}/pve-ssl.key"
 
 - name: Add update-certs.sh
   ansible.builtin.template:
