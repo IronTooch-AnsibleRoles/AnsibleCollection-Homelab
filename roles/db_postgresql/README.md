@@ -42,14 +42,14 @@ Example Playbooks
 # This makes a regular database, with a db named "myapp_db", a db user named "myapp_dbuser", a random password, and global network access
     - role: 'irontooch.homelab.db_postgresql'
       vars:
-        app_name: "myapp"
+        postgres_app_name: "myapp"
 ```
 
 ```yaml
 # This makes a regular database, with a db named "myapp", a db user named "myapp", sets the myapp user's password to "mypassword1234, and global network access
     - role: 'irontooch.homelab.db_postgresql'
       vars:
-        app_name: "myapp"
+        postgres_app_name: "myapp"
         postgres_db: "myapp"
         postgres_dbuser: "myapp"
         postgres_dbpassword: {{ "mypassword1234" | hash('md5')}}
@@ -59,7 +59,7 @@ Example Playbooks
 # This makes a regular database, with a db named "myapp_db", a db user named "myapp_dbuser", sets the myapp user's password to a random value, and only allows access from the localhost (which wouldn't be weird for self-deployed apps)
     - role: 'irontooch.homelab.db_postgresql'
       vars:
-        app_name: "myapp"
+        postgres_app_name: "myapp"
         postgres_pass_location: ""
         pga_restricted_cidr: "127.0.0.1/32"
 ```
