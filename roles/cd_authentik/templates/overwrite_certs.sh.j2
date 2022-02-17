@@ -1,9 +1,9 @@
-cp -f /etc/step-ca/auth.tucc.io-web.crt /opt/authentik/certs/auth.tucc.io-web.pem
-cp -f /etc/step-ca/auth.tucc.io-web.key /opt/authentik/certs/auth.tucc.io-web.key
-chmod 666 /opt/authentik/certs/auth.tucc.io-web.pem
-chmod 666 /opt/authentik/certs/auth.tucc.io-web.key
+cp -f {{ smallstep_web_certificate_path }} {{ authentik_web_certificate_path }}
+cp -f {{ smallstep_web_key_path }} {{ authentik_web_key_path }}
+chmod 666 {{ authentik_web_certificate_path }}
+chmod 666 {{ authentik_web_key_path }}
 
-cp -f /etc/step-ca/auth.tucc.io-ldap.crt /opt/authentik/certs/auth.tucc.io-ldap.pem
-cp -f /etc/step-ca/auth.tucc.io-ldap.key /opt/authentik/certs/auth.tucc.io-ldap.key
-chmod 666 /opt/authentik/certs/auth.tucc.io-ldap.pem
-chmod 666 /opt/authentik/certs/auth.tucc.io-ldap.key
+cp -f {{ smallstep_ldap_key_path }} {{ smallstep_ldap_key_path }}
+cp -f {{ smallstep_ldap_key_path }} {{ smallstep_ldap_key_path }}
+chmod 666 {{ authentik_ldap_certificate_path }}
+chmod 666 {{ authentik_ldap_key_path }}
