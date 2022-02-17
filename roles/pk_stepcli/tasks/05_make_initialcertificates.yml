@@ -36,14 +36,14 @@
     verbosity: 0
 
 - name: Store a copy of the command to request the initial certs
-  ansible.builtin.copy:
-    content: "{{ cert_request_command }}"
-    dest: /etc/step-ca/cert_request.sh
-    force: true
+  ansible.builtin.lineinfile:
+    path: "/etc/step-ca/cert_request.sh"
+    state: present
+    line: "{{ cert_request_command }}"
+    create: true
     owner: "{{ smallstep_system_user }}"
     group: "{{ smallstep_system_user }}"
     mode: "0700"
-
 
 - name: Request certificate
   ansible.builtin.expect:
