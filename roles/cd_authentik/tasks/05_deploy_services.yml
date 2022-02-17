@@ -1,0 +1,48 @@
+---
+- name: Deploy Web Cert Renewer Template
+  ansible.builtin.template:
+    src: cert-renewer.service.j2
+    dest: "{{ authentik_web_cert_renewer_path }}"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+  vars:
+    auth_cert_service: "Authentik Website"
+    smallstep_certificate_full_path: "{{ smallstep_web_certificate_path }}"
+    smallstep_key_full_path: "{{ smallstep_web_key_path }}"
+
+- name: Deploy LDAP Cert Renewer Template
+  ansible.builtin.template:
+    src: cert-renewer.service.j2
+    dest: "{{ authentik_ldap_cert_renewer_path }}"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+  vars:
+    auth_cert_service: "LDAP Certificate"
+    smallstep_certificate_full_path: "{{ smallstep_ldap_certificate_path }}"
+    smallstep_key_full_path: "{{ smallstep_ldap_key_path }}"
+
+- name: Deploy Renewer Templates
+  ansible.builtin.template:
+    src: cert-timer.service.j2
+    dest: "{{ authentik_web_cert_timer }}"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Deploy Renewer Templates
+  ansible.builtin.template:
+    src: cert-timer.service.j2
+    dest: "{{ authentik_ldap_cert_timer }}"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Ensure {{ authentik_web_cert_timer }} is started
+  ansible.builtin.service:
+    name: "{{ authentik_web_cert_timer }}"
+    state: started
+    enabled: true
+
+- name: Ensure {{ authentik_ldap_cert_timer }} is started
+  ansible.builtin.service:
+    name: "{{ authentik_ldap_cert_timer }}"
+    state: started
+    enabled: true

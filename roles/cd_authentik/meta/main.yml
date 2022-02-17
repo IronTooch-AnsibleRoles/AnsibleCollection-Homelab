@@ -1,0 +1,17 @@
+galaxy_info:
+  role_name: cd_authentik
+  namespace: irontooch
+  author: IronTooch
+  description: A role to install the Authentik LDAP Service for Authentication and Authorization
+  license: GPL-3.0-only
+  min_ansible_version: 2.1
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+
+  galaxy_tags: []
+
+dependencies:
+  - '../../AnsibleCollections/irontooch/homelab/roles/su_docker'

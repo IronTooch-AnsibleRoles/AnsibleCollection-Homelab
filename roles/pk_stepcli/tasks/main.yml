@@ -16,7 +16,7 @@
 
 - name: Get version from file
   ansible.builtin.shell:
-    cmd: "test -f \"{{ installed_version_path }}\" && cat {{ installed_version_path }}"
+    cmd: "test -f \"{{ smallstep_installed_version_path }}\" && cat {{ smallstep_installed_version_path }}"
   register: installed_version
   failed_when: false
   changed_when: false
@@ -43,7 +43,7 @@
 # step ca certificate svc.example.com svc.crt svc.key
 - name: Check to see if Leaf Cert is created
   ansible.builtin.stat:
-    path: "/etc/step-ca/certs/{{ certificate_filename }}"
+    path: "/etc/step-ca/certs/{{ smallstep_certificate_filename }}"
   register: leaf_cert_exists
   tags: install_leafcert
 
@@ -55,7 +55,7 @@
 
 - name: Check to see if Services are Deployed
   ansible.builtin.stat:
-    path: "/etc/systemd/system/cert-renewer@.timer"
+    path: "/etc/systemd/system/{{ cert_renewer_timer_service }}"
   register: services_deployed
   tags: install_services
 
@@ -71,9 +71,9 @@
 - name: Install certificates into Nginx and start renewal configuration
   ansible.builtin.include_tasks:
     file: "07a_nginx_certs.yml"
-  when: dependent_service == "nginx"
+  when: smallstep_dependent_service == "nginx"
 
 - name: Install certificates into Proxmox and start renewal configuration
   ansible.builtin.include_tasks:
     file: "07b_proxmox_certs.yml"
-  when: dependent_service == "proxmox"
+  when: smallstep_dependent_service == "proxmox"
