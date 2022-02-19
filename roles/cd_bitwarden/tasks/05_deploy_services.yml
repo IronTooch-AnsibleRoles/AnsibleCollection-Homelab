@@ -35,19 +35,6 @@
     group: "{{ service_user }}"
     mode: "0700"
 
-- name: Make override directory
-  ansible.builtin.file:
-    path: "{{ cert_renewer_path }}"
-    state: directory
-    mode: '0755'
-
-- name: Deploy Bitwarden override
-  ansible.builtin.template:
-    src: cert-renewer.bitwarden.override.j2
-    dest: "{{ cert_renewer_path }}/override.conf"
-    force: true
-    mode: '0770'  # Ansible-Lint hates when this isn't set
-
 - name: Rebuild Bitwarden with new configuration
   become_user: "{{ service_user }}"
   ansible.builtin.command:
@@ -55,14 +42,29 @@
     chdir: "{{ bitwarden_dir }}"
   changed_when: false
 
+- name: Template out bitwarden renewer service
+  ansible.builtin.template:
+    src: bw-renewer@.service.j2
+    dest: "{{ cert_renewer_path }}"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Ensure cert-renewer@bitwarden.timer Enabled 
+  ansible.builtin.service:
+    name: bw-renewer@bitwarden.timer
+    enabled: true
+
+- name: Ensure bitwarden is Enabled
+  ansible.builtin.service:
+    name: bitwarden
+    enabled: true
+
 - name: Ensure cert-renewer@bitwarden.timer is started
   ansible.builtin.service:
     name: cert-renewer@bitwarden.timer
     state: started
-    enabled: true
 
 - name: Ensure bitwarden is restarted
   ansible.builtin.service:
     name: bitwarden
     state: restarted
-    enabled: true

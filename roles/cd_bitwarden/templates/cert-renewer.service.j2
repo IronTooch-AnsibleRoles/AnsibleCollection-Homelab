@@ -20,6 +20,15 @@ ExecCondition=/usr/bin/step certificate needs-renewal ${CERT_LOCATION}
 ; ExecStart renews the certificate, if ExecStartPre was successful.
 ExecStart=/usr/bin/step ca renew --force ${CERT_LOCATION} ${KEY_LOCATION}
 
+ExecStartPost=logger "Starting Cert Renewer Override..."
+ExecStartPost=cp /etc/step-ca/{{ external_domain }}.crt {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/certificate.crt
+ExecStartPost=cp /etc/step-ca/{{ external_domain }}.key {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/private.key
+ExecStartPost=chmod 0640 {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/certificate.crt
+ExecStartPost=chmod 0640 {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/private.key
+ExecStartPost=chown {{ service_user }}:{{ service_user }} {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/certificate.crt
+ExecStartPost=chown {{ service_user }}:{{ service_user }} {{bitwarden_dir}}/bwdata/ssl/{{ external_domain }}/private.key
+ExecStartPost=logger "Cert Renew Override Complete..."
+
 ; Try to reload or restart the systemd service that relies on this cert-renewer
 ; If the relying service doesn't exist, forge ahead.
 ; (In systemd <229, use `reload-or-try-restart` instead of `try-reload-or-restart`)

@@ -12,8 +12,11 @@ smtp_ssl: "true"
 smtp_username: "my_user@gmail.com"
 smtp_password: "my_password"
 admin_user_email: "bitwarden_admin@example.com"
-cert_renewer_path: "/etc/systemd/system/cert-renewer@bitwarden.service.d"
+cert_renewer_path: "/etc/systemd/system/bw-renewer.service"
 environment_file: "{{ bitwarden_dir }}/bwdata/env/global.override.env"
+bitwarden_cert_path: "/opt/bitwarden/bwdata/ssl/"
+bitwarden_certificate_full_path: "{{ bitwarden_cert_path }}/{{ external_domain }}/certificate.crt"
+bitwarden_key_full_path: "{{ bitwarden_cert_path }}/{{ external_domain }}/private.key"
 reverse_proxy_servers:
   - 11.22.33.44
   - 55.66.77.88
