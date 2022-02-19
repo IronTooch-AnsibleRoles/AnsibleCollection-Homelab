@@ -9,7 +9,6 @@
   ansible.builtin.stat:
     path: "/dev/ptp_kvm"
   register: ptp_kvm
-  #variable_for_file_status.stat.exists to check file existance
 
 - name: Add the PTP KVM Module
   community.general.modprobe:
