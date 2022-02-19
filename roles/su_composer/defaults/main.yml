@@ -1,2 +1,6 @@
 ---
-# defaults file for su_composer
+
+composer_tmp_directory: "/tmp"
+composer_tmp_path: "{{ composer_tmp_directory }}/install_composer.sh"
+composer_installed_path: "{{ composer_tmp_directory }}/composer.phar"
+composer_bin_path: "/usr/local/bin/composer"

@@ -1,2 +1,62 @@
 ---
-# tasks file for su_composer
+
+- name: Check to see if Composer is already installed
+  command: "which composer"
+  register: composer_result
+  changed_when: false
+  failed_when: false
+
+- name: If installed, update
+  become: true
+  ansible.builtin.command:
+    cmd: "composer self-update"
+    chdir: ""
+  when: composer_result.rc == 0
+
+- name: Install Composer
+  block:
+
+    - name: Install dependencies
+      ansible.builtin.include_tasks:
+        file: "01_install_dependencies.yml"
+
+    # tasks file for su_composer
+    - name: Copy Composer download file to /tmp directory
+      ansible.builtin.copy:
+        src: install_composer.sh
+        dest: "{{ composer_tmp_path }}"
+        remote_src: false
+        force: true
+        owner: "root"
+        group: "root"
+        mode: "0700"
+
+    - name: Make Composer executable
+      ansible.builtin.file:
+        path: "{{ composer_tmp_path }}"
+        state: file
+        mode: "a+x"
+
+    - name: Run Composer install
+      ansible.builtin.command:
+        cmd: "{{ composer_tmp_path }}"
+        chdir: "/tmp/"
+        creates: "{{ composer_installed_path }}"
+
+    - name: Copy composer to /bin
+      ansible.builtin.copy:
+        src: "{{ composer_installed_path }}"
+        dest: "{{ composer_bin_path }}"
+        remote_src: true
+        force: true
+        owner: "root"
+        group: "root"
+        mode: "0755"
+
+    - name: Make Composer /etc/directory
+      ansible.builtin.file:
+        path: /etc/composer
+        state: directory
+        mode: '0755'
+
+  when: composer_result.rc == 1
