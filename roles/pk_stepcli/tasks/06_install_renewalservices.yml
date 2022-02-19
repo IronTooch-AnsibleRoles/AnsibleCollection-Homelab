@@ -1,14 +1,17 @@
 ---
-- name: Template out renewer service
-  ansible.builtin.template:
-    src: cert-renewer.service.j2
-    dest: "/etc/systemd/system/{{ cert_renewer_service }}"
-    force: true
-    mode: '0644'  # Ansible-Lint hates when this isn't set
+- name: Install Renewal Services
+  block:
+  - name: Template out renewer service
+    ansible.builtin.template:
+      src: cert-renewer.service.j2
+      dest: "/etc/systemd/system/{{ cert_renewer_service }}"
+      force: true
+      mode: '0644'  # Ansible-Lint hates when this isn't set
 
-- name: Template out timer service
-  ansible.builtin.template:
-    src: cert-renewer.timer.j2
-    dest: "/etc/systemd/system/{{ cert_renewer_timer_service }}"
-    force: true
-    mode: '0644'  # Ansible-Lint hates when this isn't set
+  - name: Template out timer service
+    ansible.builtin.template:
+      src: cert-renewer.timer.j2
+      dest: "/etc/systemd/system/{{ cert_renewer_timer_service }}"
+      force: true
+      mode: '0644'  # Ansible-Lint hates when this isn't set
+  when: smallstep_install_renewal_certificates

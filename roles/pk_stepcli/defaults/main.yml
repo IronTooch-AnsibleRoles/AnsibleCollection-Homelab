@@ -18,3 +18,8 @@ smallstep_step_smallstep_subject_names: "--san {{ smallstep_subject_names | join
 smallstep_dependent_service: "" #Options nginx/proxmox
 cert_renewer_service: "cert-renewer@.service"
 cert_renewer_timer_service: "cert-renewer@.timer"
+
+# Install Flags
+smallstep_install_root_certificate: true
+smallstep_install_leaf_certificates: true
+smallstep_install_renewal_certificates: true
