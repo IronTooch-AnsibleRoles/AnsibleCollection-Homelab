@@ -9,6 +9,8 @@
     auth_cert_service: "Authentik Website"
     smallstep_certificate_full_path: "{{ smallstep_web_certificate_path }}"
     smallstep_key_full_path: "{{ smallstep_web_key_path }}"
+    authentik_certificate_full_path: "{{ authentik_web_certificate_path }}"
+    authentik_key_full_path: "{{ authentik_web_key_path }}"
 
 - name: Deploy LDAP Cert Renewer Template
   ansible.builtin.template:
@@ -20,6 +22,8 @@
     auth_cert_service: "LDAP Certificate"
     smallstep_certificate_full_path: "{{ smallstep_ldap_certificate_path }}"
     smallstep_key_full_path: "{{ smallstep_ldap_key_path }}"
+    authentik_certificate_full_path: "{{ authentik_ldap_certificate_path }}"
+    authentik_key_full_path: "{{ authentik_ldap_key_path }}"
 
 - name: Deploy Renewer Templates
   ansible.builtin.template:
