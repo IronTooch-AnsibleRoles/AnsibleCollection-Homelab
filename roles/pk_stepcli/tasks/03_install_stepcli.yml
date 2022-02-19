@@ -42,6 +42,12 @@
     state: present
     line: 'export STEPPATH=/etc/step-ca'
 
+- name: Add STEPPATH to /etc/environment
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    state: present
+    line: 'STEPPATH=/etc/step-ca'
+
 - name: Make Step CA directories
   ansible.builtin.file:
     path: "{{ item }}"

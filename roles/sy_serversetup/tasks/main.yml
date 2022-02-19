@@ -1,24 +1,5 @@
 ---
 # tasks file for sy_serversetup
-- name: Install base packages
-  ansible.builtin.apt:
-    name:  
-      - mlocate
-      - vim
-      - screen
-      - bat
-      - qemu-guest-agent
-      - net-tools
-      - fd-find
-      - chrony
-    state: present
-    update_cache: true
-    force: true
-  register: apt_status
-  until: apt_status is success
-  delay: 6
-  retries: 10
-
 - name: Update /etc/issue
   ansible.builtin.template:
     src: issue.j2
@@ -51,6 +32,25 @@
   copy:
     content: "{{ default_user }}  ALL=(ALL) NOPASSWD:ALL" 
     dest: "/etc/sudoers.d/{{ default_user }}"
+
+- name: Install base packages
+  ansible.builtin.apt:
+    name:  
+      - mlocate
+      - vim
+      - screen
+      - bat
+      - qemu-guest-agent
+      - net-tools
+      - fd-find
+      - chrony
+    state: present
+    update_cache: true
+    force: true
+  register: apt_status
+  until: apt_status is success
+  delay: 6
+  retries: 10
 
 - name: Set Timezone for VM
   community.general.timezone:

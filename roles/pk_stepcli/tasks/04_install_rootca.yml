@@ -1,51 +1,54 @@
 ---
-- name: Pull root CA
-  become_user: "{{ smallstep_system_user }}"
-  ansible.builtin.command:
-    cmd: "step ca bootstrap --ca-url {{ smallstep_ca_url }} --fingerprint {{ smallstep_ca_footprint }}"
-    chdir: "/etc/step-ca"
+- name: Install Root CA, fix Step Path. 
+  block:
+  - name: Pull root CA
+    become_user: "{{ smallstep_system_user }}"
+    ansible.builtin.command:
+      cmd: "step ca bootstrap --ca-url {{ smallstep_ca_url }} --fingerprint {{ smallstep_ca_footprint }}"
+      chdir: "/etc/step-ca"
 
-- name: checking if the user step directory exists
-  stat:
-    path: /home/{{ smallstep_system_user }}/.step/
-  register: user_step_dir_exists
+  - name: checking if the user step directory exists
+    stat:
+      path: /home/{{ smallstep_system_user }}/.step/
+    register: user_step_dir_exists
 
-- name: Moving Step Folders
-  copy:
-    src: "/home/{{ smallstep_system_user }}/.step/"
-    dest: "/etc/step-ca/"
-    owner: "{{ smallstep_system_user }}"
-    group: "{{ smallstep_system_user }}"
-    mode: '0770'
-    remote_src: true
-  when: user_step_dir_exists.stat.exists
+  - name: Moving Step Folders
+    copy:
+      src: "/home/{{ smallstep_system_user }}/.step/"
+      dest: "/etc/step-ca/"
+      owner: "{{ smallstep_system_user }}"
+      group: "{{ smallstep_system_user }}"
+      mode: '0770'
+      remote_src: true
+    when: user_step_dir_exists.stat.exists
 
-- name: Delete content & directory
-  file:
-    path: "/home/{{ smallstep_system_user }}/.step/"
-    state: absent
+  - name: Delete content & directory
+    file:
+      path: "/home/{{ smallstep_system_user }}/.step/"
+      state: absent
 
-- name: Fix step path
-  ansible.builtin.replace:
-    path: "/etc/step-ca/config/defaults.json"
-    regexp: "/home/{{ smallstep_system_user }}/.step"
-    replace: "/etc/step-ca"
-    owner: "{{ smallstep_system_user }}"
-    group: "{{ smallstep_system_user }}"
-    mode: '0770'
+  - name: Fix step path
+    ansible.builtin.replace:
+      path: "/etc/step-ca/config/defaults.json"
+      regexp: "/home/{{ smallstep_system_user }}/.step"
+      replace: "/etc/step-ca"
+      owner: "{{ smallstep_system_user }}"
+      group: "{{ smallstep_system_user }}"
+      mode: '0770'
 
-- name: Deploy Provisioner Password
-  ansible.builtin.copy:
-    content: '{{ smallstep_provisioner_password }}'
-    dest: /etc/step-ca/step_creds.txt
-    force: true
-    owner: "{{ smallstep_system_user }}"
-    group: "{{ smallstep_system_user }}"
-    mode: "0700"
+  - name: Deploy Provisioner Password
+    ansible.builtin.copy:
+      content: '{{ smallstep_provisioner_password }}'
+      dest: /etc/step-ca/step_creds.txt
+      force: true
+      owner: "{{ smallstep_system_user }}"
+      group: "{{ smallstep_system_user }}"
+      mode: "0700"
 
-- name: Install root CA
-  ansible.builtin.command:
-    cmd: "step certificate install /etc/step-ca/certs/root_ca.crt"
-    chdir: "/etc/step-ca"
-  environment:
-    STEPPATH: /etc/step-ca
+  - name: Install root CA
+    ansible.builtin.command:
+      cmd: "step certificate install /etc/step-ca/certs/root_ca.crt"
+      chdir: "/etc/step-ca"
+    environment:
+      STEPPATH: /etc/step-ca
+  when: smallstep_install_root_certificate

@@ -5,10 +5,17 @@
     state: present
     update_cache: true
 
+- name: Check if the PTP_KVM Module is available
+  ansible.builtin.stat:
+    path: "/dev/ptp_kvm"
+  register: ptp_kvm
+  #variable_for_file_status.stat.exists to check file existance
+
 - name: Add the PTP KVM Module
   community.general.modprobe:
     name: ptp_kvm
     state: present
+  when: ptp_kvm.stat.exists
 
 - name: Add ptp_kvm to the module to be loaded
   ansible.builtin.lineinfile:
@@ -17,6 +24,7 @@
     line: ptp_kvm
     create: true
     mode: '0770'
+  when: ptp_kvm.stat.exists
 
 - name: Fix Chrony
   ansible.builtin.template:
@@ -24,3 +32,4 @@
     dest: /etc/chrony/chrony.conf
     force: true
     mode: '0770'  # Ansible-Lint hates when this isn't set
+  when: ptp_kvm.stat.exists

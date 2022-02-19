@@ -39,6 +39,14 @@
     force: true
     mode: '0770'  # Ansible-Lint hates when this isn't set
 
+- name: Template out Overwrite_certs
+  ansible.builtin.template:
+    src: overwrite_certs.sh.j2
+    dest: "{{ smallstep_inital_cert_location }}/overwrite_certs.sh"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+
 - name: Ensure {{ authentik_web_cert_timer }} is started
   ansible.builtin.service:
     name: "{{ authentik_web_cert_timer }}"
