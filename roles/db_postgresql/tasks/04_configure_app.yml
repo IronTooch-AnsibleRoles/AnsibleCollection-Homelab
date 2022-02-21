@@ -1,13 +1,18 @@
 ---
 - name: Create Postgres Password since it was not provided
   ansible.builtin.set_fact:
-    postgres_dbpassword: "{{ lookup('community.general.random_string', length=24, special=false) }}"
+    postgres_dbpw: "{{ postgres_dbpassword }}"
+  when: postgres_dbpassword
+
+- name: Create Postgres Password since it was not provided
+  ansible.builtin.set_fact:
+    postgres_dbpw: "{{ lookup('community.general.random_string', length=24, special=false) }}"
   when: not postgres_dbpassword
   # no_log: true
 
 - name: Create Encrypted Postgres Password
   ansible.builtin.set_fact:
-    postgres_encrypted_password: "md5{{ (postgres_dbpassword + postgres_dbuser) | hash('md5')  }}"
+    postgres_encrypted_password: "md5{{ (postgres_dbpw + postgres_dbuser) | hash('md5')  }}"
   # no_log: true
 
 - name: Check if User Created Flag file is present
@@ -28,6 +33,7 @@
   ansible.builtin.file:
     path: "{{ postgres_user_created_path }}"
     state: touch
+    mode: '0700'
   when: not postgres_user_created.stat.exists
 
 - name: Check if Database Created Flag file is present
@@ -48,6 +54,7 @@
   ansible.builtin.file:
     path: "{{ postgres_db_created_path }}"
     state: touch
+    mode: '0700'
   when: not postgres_db_created.stat.exists
 
 # The postgres HBA file is dependent on Major Version. All of this finagling is to get to the
@@ -73,6 +80,10 @@
   ansible.builtin.set_fact:
     postgres_major_ver: "{{ postgres_majorminor_ver | split ('.') | first }}"
 
+- name: HBA Conf Location
+  ansible.builtin.set_fact:
+    hba_conf_location: "/etc/postgresql/{{ postgres_major_ver }}/main/pg_hba.conf"
+
 - name: Template out pg_hba.conf
   ansible.builtin.template:
     src: pg_hba.conf.j2
@@ -82,10 +93,16 @@
 
 - name: Copy Postgres DB Password to host location
   ansible.builtin.copy:
-    content: "{{ postgres_dbpassword }}"
+    content: "{{ postgres_dbpw }}"
     dest: "{{ postgres_pass_location }}"
     force: true
     owner: "{{ default_postgres_system_user }}"
     group: "{{ default_postgres_system_user }}"
     mode: "0700"
   when: postgres_pass_location
+
+- name: Restart postgresql service
+  ansible.builtin.service:
+    name: postgresql
+    state: restarted
+    enabled: true
