@@ -33,3 +33,8 @@
     force: true
     mode: '0770'  # Ansible-Lint hates when this isn't set
   when: ptp_kvm.stat.exists
+
+- name: Reboot server to bring KVM agent online
+  ansible.builtin.reboot:
+    reboot_timeout: "120"
+

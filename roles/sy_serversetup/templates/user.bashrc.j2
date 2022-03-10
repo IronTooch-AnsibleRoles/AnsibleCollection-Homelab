@@ -110,3 +110,5 @@ alias sync-time='sudo chronyc -a makestep'
 alias timers='systemctl list-timers -all'
 alias wipe-syslog-docker="sed -i '/run-docker-runtime/d' /var/log/syslog"
 alias service-status="service --status-all"
+alias wipe-log="truncate -s 0"
+
